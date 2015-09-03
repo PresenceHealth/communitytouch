@@ -91,9 +91,10 @@ var groupings = {
 d = {};
 var completed = 0;
 function loadMinistry(ministry){
+	var newUrl = 'https://raw.githubusercontent.com/presencehealth/communitybenefit/master/data/PH Community Benefit - ' + ministry + '.csv';
 	var url = 'https://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=';
 	var oldUrl = 'https://docs.google.com/spreadsheets/d/1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo/pub?gid=' + ministries[ministry] + '&single=true&output=csv';
-	Papa.parse(url + ministries[ministry],{
+	Papa.parse(newUrl,{
 		download: true,
 		header: true,
 		dynamicTyping: true,
