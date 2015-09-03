@@ -1,0 +1,121 @@
+
+/* colors 
+
+Blue #87D2DA
+Blizzard #02B4C5
+Sky #089DAB
+Teal #70C8BC
+Aqua #00B09A
+Great Lakes #06A18C
+Green #B3D034
+Dark Green #7ABC43
+Leafy Green #4AB553
+Orange #EEB91C
+Tangerine #ECA337
+Sunset #DF7E2A
+
+Grey #666666
+
+primary: aqua
+success: dark green
+info: blue
+warning: tangerine
+danger: sunset
+
+*/
+
+.header {
+	background-color: #ddd;
+}
+
+#progress-bar {
+	margin-top: 50px;
+}
+
+.progress-bar {
+	height: 50px;
+}
+
+#options-bar {
+	background-color: #87D2DA;
+}
+
+/* resize charts for large screens */
+#container-2, #container-4 {
+	height: 400px;
+}
+
+@media screen and (min-width: 1200px){
+	#container-2, #container-4 {
+		height: 500px;
+	}
+}
+
+/* headline */
+.headline {
+	background-color: #666;
+	min-height: 20px;
+	padding: 0 15% 15px 15%;
+}
+.headline h3 {
+	text-align: center;
+	color: #fff;
+}
+.headline span#headline-min {
+	color: #87D2DA;
+}
+.headline span#headline-num {
+	color: #EEB91C;
+	font-size: 1.3em;
+}
+.headline span#headline-cat {
+	color: #B3D034;
+}
+.headline span#headline-per {
+	color: #EEB91C;
+	font-size: 1.3em;
+}
+
+/* period dropdown */
+.period-dropdown {
+	position: absolute;
+	top: 35px;
+	right: 24px;
+	z-index: 2;
+}
+
+/* for testing */
+.test {
+	background-color: #00B09A;
+	min-height: 300px;
+	border: 2px solid #666666;
+}
+
+/* highcharts tooltip */
+.highcharts-tooltip { 
+	width:180px; 
+}
+
+/* footer */
+footer[role="contentinfo"] {
+	padding: 15px 0 0 0;
+	font-size: 12px;
+	border-top: 1px solid #ddd;
+	}
+footer[role="contentinfo"] nav ul li {
+	display: inline;
+	margin: 0 10px 0 0;
+	padding: 0 10px 0 0;
+	font-weight: bold;
+	border-right: 1px solid #ccc;
+	}
+footer[role="contentinfo"] nav ul li:last-child {
+	margin: 0;
+	padding: 0;
+	border: none;
+	}
+
+/* bootstrap fixes */
+.btn {
+	padding: 6px;
+}

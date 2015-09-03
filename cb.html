@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="css/cb.css">
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row header">
+		<div class="col-xs-3"><img src="logo.GIF" height="33" width="200" style="margin-top: 5px;"></div>
+		<div class="col-xs-6">
+			<h2 style="text-align: center;">Community Benefit</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div id="options-bar" class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+			<h3> </h3>
+			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+			  <div class="panel panel-default">
+			    <div class="panel-heading" role="tab" id="headingOne">
+			      <h4 class="panel-title">
+			        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+			          What Is Community Benefit?
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+			      <div class="panel-body">
+			        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+			        <p><a href="#" class="btn" onclick="$('#collapseOne').collapse('hide');">Got it!</a></p>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="panel panel-default">
+			    <div class="panel-heading" role="tab" id="headingTwo">
+			      <h4 class="panel-title">
+			        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+			          How To Use This Tool
+			        </a>
+			      </h4>
+			    </div>
+			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+			      <div class="panel-body">
+			        Not all data may be accurate or complete. See notes below the graphs.
+			        <p><a href="#" onclick="$('#collapseTwo').collapse('hide');">Got it!</a></p>
+			      </div>
+			    </div>
+			  </div>
+			</div><!-- panel-group -->
+
+			<form>
+				<div class="form-group" id="ministry">
+					<label for="ministrySelect">Ministry</label>
+					<select class="form-control" id="ministrySelect">
+						<optgroup>	
+							<option value="System" selected>Presence Health</option>
+						</optgroup>
+						<optgroup label="_______">	
+							<option value="PCMC">Presence Covenant Medical Center</option>
+							<option value="PHFMC">Presence Holy Family Medical Center</option>
+							<option value="PMMC">Presence Mercy Medical Center</option>
+							<option value="POLRMC">Presence Our Lady of the Resurrection Medical Center</option>
+							<option value="PRMC">Presence Resurrection Medical Center</option>
+							<option value="PSFH">Presence Saint Francis Hospital</option>
+							<option value="PSJH-C">Presence Saint Joseph Hospital - Chicago</option>
+							<option value="PSJH-E">Presence Saint Joseph Hospital - Elgin</option>
+							<option value="PSJMC">Presence Saint Joseph Medical Center</option>
+							<option value="PSMEMC">Presence Saints Mary and Elizabeth Medical Center</option>
+							<option value="PSMH">Presence St. Mary's Hospital</option>
+							<option value="PUSMC">Presence United Samaritans Medical Center</option>
+							<option value="PMG">Presence Medical Group</option>
+							<option value="PLC">Presence Life Connections</option>
+							<option value="PH Corp">Presence Health Corporate</option>
+						</optgroup>
+					</select>
+				</div><!-- ministry -->
+				<div class="form-group" id="category">
+					<label>Category</label>
+					<div class="list-group">
+					  <a href="#" class="list-group-item active" data-name="Total Community Benefit (IRS)">Total Community Benefit (IRS)</a>
+					  <a href="#" class="list-group-item" data-name="Total Community Benefit (AG)">Total Community Benefit (AG)</a>
+					  <a href="#" class="list-group-item" data-name="Proactive Community Benefit">Proactive Community Benefit</a>
+					  <a href="#" class="list-group-item" data-name="Charity Care">Charity Care</a>
+					  <a href="#" class="list-group-item" data-name="Unreimbursed Medicaid">Unreimbursed Medicaid</a>
+					</div>
+					<select class="form-control">
+						<option value="Other Categories..." selected>Other Categories...</option>
+						<optgroup label="Aggregated">
+							<option value="Total Means-Tested">Total Means-Tested</option>
+							<option value="Community Health">Community Health</option>
+						</optgroup>
+						<optgroup label="IRS Components">
+							<option value="Community Health Improvement">Community Health Improvement</option>
+							<option value="Health Professions Education">Health Professions Education</option>
+							<option value="Subsidized Health Services">Subsidized Health Services</option>
+							<option value="Research">Research</option>
+							<option value="Cash/In-Kind Contributions">Cash/In-Kind Contributions</option>
+							<option value="Community Building Activities">Community Building Activities</option>
+							<option value="Community Benefit Operations">Community Benefit Operations</option>
+						</optgroup>
+						<optgroup label="AG Components">
+							<option value="Medicare Shortfall">Medicare Shortfall</option>
+							<option value="Bad Debt">Bad Debt</option>
+							<option value="Language Assistance Services">Language Assistance Services</option>
+							<option value="Volunteer Services">Volunteer Services</option>
+						</optgroup>
+						<optgroup label="Technical">
+							<option value="Total Operating Expenses">Total Operating Expenses</option>
+							<option value="Net Patient Revenue">Net Patient Revenue</option>
+							<option value="Cost-to-Charge Ratio">Cost-to-Charge Ratio</option>
+						</optgroup>
+					</select>
+				</div><!-- category -->
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group" id="unit">
+							<label for="unit">Unit</label>
+							<div class="btn-group btn-group-justified" role="group" aria-label="...">
+							  <div class="btn-group amount-dropdown" role="group" style="display: none;">
+							  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						      	<span class="dropdown-name">Amount</span> <span class="caret"></span>
+						    	</button>
+							    <ul class="dropdown-menu">
+							    	<li><a data-name="Amount">Amount</a></li>
+							      <li><a data-name="Amount at cost">Amount at cost</a></li>
+							      <li><a data-name="Billings">Billings</a></li>
+							    </ul>
+							  </div>
+							  <a type="button" class="btn btn-default amount-unit active" data-name="Amount">Amount</a>
+							  <a type="button" class="btn btn-default persons-unit" data-name="Persons served">Persons served</a>
+							  <a type="button" class="btn btn-default" data-name="% of expenses">% of expenses</a>
+							</div>
+						</div><!-- unit -->
+					</div>
+					<div class="col-xs-12">
+						<div class="form-group">
+							<label for="temporal">Period</label>
+							<div class="btn-group btn-group-justified" id="temporal" role="group" aria-label="...">
+							  <a type="button" class="btn btn-default active" data-name="Yearly">Yearly</a>
+							  <a type="button" class="btn btn-default" data-name="Quarterly">Quarterly</a>
+							</div>
+						</div><!-- temporal -->
+					</div>
+				</div><!-- unit and temporal -->
+			</form>
+		</div><!-- options-bar -->
+
+		<div class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
+			<div class="row">
+				<div class="col-xs-12 headline">
+					<h3></h3>
+				</div>
+				<div class="col-xs-12 col-lg-6">
+					<div id="progress-bar" class="progress">
+						<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="16" style="width: 0%; min-width: 8%;"><i>Loading...</i>
+						</div>
+					</div><!-- progress bar -->
+					<div id="container-1" style="width: 100%; height: 400px;"></div>
+					<div class="warning"></div>
+				</div><!-- column chart -->
+				<div class="col-xs-12 col-lg-6" style="display:none;">
+					<div class="form-group period-dropdown">
+						<select id="period" class="form-control">
+							<option value="2014">2014</option>
+						</select>
+					</div><!-- period -->
+					<div id="container-3" style="width: 100%; height: 400px;"></div>
+					<div class="warning"></div>
+				</div><!-- tree chart -->
+				<div class="col-xs-12" style="display:none;">
+					<div id="container-2" style="width: 100%;"></div>
+					<div class="warning"></div>
+				</div><!-- area chart -->
+				<div class="col-xs-12">
+					<div id="container-4" style="width: 100%; height: 400px;"></div>
+					<div class="warning"></div>
+				</div><!-- line chart -->
+			</div>
+			<footer role="contentinfo">
+				<nav role="navigation">
+					<ul>
+						<li><a href="http://www.presencehealth.org/">Presence Health System</a></li>
+						<li><a href="http://www.presencehealth.org/community-reports">Presence Community Health</a></li>
+						<li><a href="http://github.com/presencehealth">Join Us on GitHub</a></li>
+						<li style="font-weight: normal;">Charts by <a href="http://www.highcharts.com/">Highcharts</a></li>
+						<li style="font-weight: normal;">Copyright &copy; 2015 Presence Health</li>
+					</ul>
+				</nav>
+			</footer>
+		</div>
+	</div><!-- primary row -->
+</div><!-- container-fluid -->
+
+</body>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://code.highcharts.com/modules/treemap.js"></script>
+<script src="http://code.highcharts.com/modules/no-data-to-display.js"></script>
+<script src="js/papaparse.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/cb.js"></script>
+</html>
