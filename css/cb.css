@@ -84,6 +84,23 @@ danger: sunset
 	z-index: 2;
 }
 
+/* warning */
+.warning {
+	text-align: center;
+}
+.warning a {
+	color: #666;
+	background-color: #dadada;
+	padding: 1px 3px;
+	border-radius: 3px;
+	transition: background-color 0.25s;
+}
+
+.warning a:hover {
+	text-decoration: none;
+	background-color: #c8c8c8;
+}
+
 /* for testing */
 .test {
 	background-color: #00B09A;
@@ -118,4 +135,9 @@ footer[role="contentinfo"] nav ul li:last-child {
 /* bootstrap fixes */
 .btn {
 	padding: 6px;
+}
+
+.tooltip-inner {
+    white-space:pre-wrap;
+    max-width: 350px;
 }
