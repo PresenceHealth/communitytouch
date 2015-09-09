@@ -128,145 +128,147 @@ function loadData(ministry, r){
 	var fillInTemporal = !(temporalFilled);
 	temporalFilled = true;
 	for (i=0; i<r.length; i++){
-		// if Period is a quarter, set type to quarterly, else yearly
-		type = (String(r[i]['Period']).indexOf('-') === -1 ? 'Yearly' : 'Quarterly');
-		// fill out temporal values
-		if (fillInTemporal){
-			if (type == 'Yearly'){
-				years.push(String(r[i]['Period']));
-			} else {
-				quarters.push(String(r[i]['Period']));
-			}
-		}
-		// iterate through keys and assign values to d object
-		for (var key in r[i]) {
-		  if (r[i].hasOwnProperty(key)) {
-		    // filter the keys
-		    value = r[i][key];
-		    if (value === ""){
-		    	value = null;
-		    }
-		    if (key === 'Period'){
-		    	// pass
-		    } else if (groupings['NonCB'].indexOf(key) !== -1){
-		    	// check that key exists
-			    if (!(d[ministry].hasOwnProperty(key))){
-			  		// initiate the object
-			  		d[ministry][key] = {};
-			  	}
-		    	// these are unitless; key = category
-		    	// check that data array exists
-		    	if (!(d[ministry][key].hasOwnProperty(type))){
-			  		// initiate the array
-			  		d[ministry][key][type] = [];
-			  	}
-			  	// add the data
-			  	if (key == 'Cost-to-Charge Ratio'){
-			  		if (value){
-							d[ministry][key][type].push(Math.round(value * 10000)/100);
-			  		} else {
-			  			// value is null
-			  			d[ministry][key][type].push(value);
-			  		}
-			  	} else {
-			  		d[ministry][key][type].push(value);
-			  	}
-		    } else {
-		    	// all other keys have units
-		    	category = key.substr(0,key.indexOf(' - '));
-		    	unit = key.slice(key.indexOf(' - ') + 3);
-		    	// check that key exists
-		    	if (!(d[ministry].hasOwnProperty(category))){
-			  		// initiate the object
-			  		d[ministry][category] = {};
-			  	}
-			  	// check that unit exists
-			  	if (!(d[ministry][category].hasOwnProperty(unit))){
-			  		// initiate the object
-			  		d[ministry][category][unit] = {};
-			  	}
-			  	// check that data array exists
-		    	if (!(d[ministry][category][unit].hasOwnProperty(type))){
-			  		// initiate the array
-			  		d[ministry][category][unit][type] = [];
-			  	}
-			  	// add the data
-			  	d[ministry][category][unit][type].push(value);
-		    }
-		  }	  
-		} // end loop over keys
-		// add aggregated data
-		['Community Health', 'Total Means-Tested', 'Proactive Community Benefit', 
-			'Total Community Benefit (IRS)', 
-			'Total Community Benefit (AG)'].forEach(function(category){
-			key = category;
-			// checks
-			if (!(d[ministry].hasOwnProperty(category))){
-				d[ministry][category] = {};
-			}
-			['Amount', 'Persons served'].forEach(function(unit){
-				if (unit !== 'Persons served' || category !== 'Total Community Benefit (AG)'){
-					// don't collect persons served for AG data
-					if (!(d[ministry][category].hasOwnProperty(unit))){
-						d[ministry][category][unit] = {};
-					}
-					if (!(d[ministry][category][unit].hasOwnProperty(type))){
-						d[ministry][category][unit][type] = [];
-					}
-					// add the data
-					var pieces;
-					var agg = 0;
-					if (category == 'Community Health'){
-						pieces = ['Community Building Activities', 'Community Health Improvement',
-							'Community Benefit Operations'];
-					}	else if (category == 'Total Means-Tested'){
-						pieces = ['Charity Care', 'Unreimbursed Medicaid'];
-					} else if (category == 'Proactive Community Benefit'){
-						pieces = ['Subsidized Health Services',
-						'Cash/In-Kind Contributions', 'Community Health'];
-					} else if (category == 'Total Community Benefit (IRS)'){
-						pieces = ['Total Means-Tested', 'Proactive Community Benefit', 
-						'Health Professions Education', 'Research'];
-					} else if (category == 'Total Community Benefit (AG)'){
-						pieces = ['Total Means-Tested', 'Health Professions Education',
-						'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall', 
-						'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
-						'Subsidized Health Services (AG)', 'Other Community Benefits'];
-					}
-					pieces.forEach(function(piece){
-						agg += d[ministry][piece][unit][type].slice(-1)[0];
-					});
-					if (agg != 0){
-						d[ministry][category][unit][type].push(agg);
-					} else {
-						d[ministry][category][unit][type].push(null);
-					}
+		if (r[i]['Period'] !== ""){
+			// if Period is a quarter, set type to quarterly, else yearly
+			type = (String(r[i]['Period']).indexOf('-') === -1 ? 'Yearly' : 'Quarterly');
+			// fill out temporal values
+			if (fillInTemporal){
+				if (type == 'Yearly'){
+					years.push(String(r[i]['Period']));
+				} else {
+					quarters.push(String(r[i]['Period']));
 				}
+			}
+			// iterate through keys and assign values to d object
+			for (var key in r[i]) {
+			  if (r[i].hasOwnProperty(key)) {
+			    // filter the keys
+			    value = r[i][key];
+			    if (value === ""){
+			    	value = null;
+			    }
+			    if (key === 'Period'){
+			    	// pass
+			    } else if (groupings['NonCB'].indexOf(key) !== -1){
+			    	// check that key exists
+				    if (!(d[ministry].hasOwnProperty(key))){
+				  		// initiate the object
+				  		d[ministry][key] = {};
+				  	}
+			    	// these are unitless; key = category
+			    	// check that data array exists
+			    	if (!(d[ministry][key].hasOwnProperty(type))){
+				  		// initiate the array
+				  		d[ministry][key][type] = [];
+				  	}
+				  	// add the data
+				  	if (key == 'Cost-to-Charge Ratio'){
+				  		if (value){
+								d[ministry][key][type].push(Math.round(value * 10000)/100);
+				  		} else {
+				  			// value is null
+				  			d[ministry][key][type].push(value);
+				  		}
+				  	} else {
+				  		d[ministry][key][type].push(value);
+				  	}
+			    } else {
+			    	// all other keys have units
+			    	category = key.substr(0,key.indexOf(' - '));
+			    	unit = key.slice(key.indexOf(' - ') + 3);
+			    	// check that key exists
+			    	if (!(d[ministry].hasOwnProperty(category))){
+				  		// initiate the object
+				  		d[ministry][category] = {};
+				  	}
+				  	// check that unit exists
+				  	if (!(d[ministry][category].hasOwnProperty(unit))){
+				  		// initiate the object
+				  		d[ministry][category][unit] = {};
+				  	}
+				  	// check that data array exists
+			    	if (!(d[ministry][category][unit].hasOwnProperty(type))){
+				  		// initiate the array
+				  		d[ministry][category][unit][type] = [];
+				  	}
+				  	// add the data
+				  	d[ministry][category][unit][type].push(value);
+			    }
+			  }	  
+			} // end loop over keys
+			// add aggregated data
+			['Community Health', 'Total Means-Tested', 'Proactive Community Benefit', 
+				'Total Community Benefit (IRS)', 
+				'Total Community Benefit (AG)'].forEach(function(category){
+				key = category;
+				// checks
+				if (!(d[ministry].hasOwnProperty(category))){
+					d[ministry][category] = {};
+				}
+				['Amount', 'Persons served'].forEach(function(unit){
+					if (unit !== 'Persons served' || category !== 'Total Community Benefit (AG)'){
+						// don't collect persons served for AG data
+						if (!(d[ministry][category].hasOwnProperty(unit))){
+							d[ministry][category][unit] = {};
+						}
+						if (!(d[ministry][category][unit].hasOwnProperty(type))){
+							d[ministry][category][unit][type] = [];
+						}
+						// add the data
+						var pieces;
+						var agg = 0;
+						if (category == 'Community Health'){
+							pieces = ['Community Building Activities', 'Community Health Improvement',
+								'Community Benefit Operations'];
+						}	else if (category == 'Total Means-Tested'){
+							pieces = ['Charity Care', 'Unreimbursed Medicaid'];
+						} else if (category == 'Proactive Community Benefit'){
+							pieces = ['Subsidized Health Services',
+							'Cash/In-Kind Contributions', 'Community Health'];
+						} else if (category == 'Total Community Benefit (IRS)'){
+							pieces = ['Total Means-Tested', 'Proactive Community Benefit', 
+							'Health Professions Education', 'Research'];
+						} else if (category == 'Total Community Benefit (AG)'){
+							pieces = ['Total Means-Tested', 'Health Professions Education',
+							'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall', 
+							'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
+							'Subsidized Health Services (AG)', 'Other Community Benefits'];
+						}
+						pieces.forEach(function(piece){
+							agg += d[ministry][piece][unit][type].slice(-1)[0];
+						});
+						if (agg != 0){
+							d[ministry][category][unit][type].push(agg);
+						} else {
+							d[ministry][category][unit][type].push(null);
+						}
+					}
+				});
 			});
-		});
-		// calculate percent of expenses
-		for (cat in d[ministry]){
-			// ignore technical categories
-			if (groupings['NonCB'].indexOf(cat) === -1){
-				if (!(d[ministry][cat].hasOwnProperty('% of expenses'))){
-		  		d[ministry][cat]['% of expenses'] = {};
-			  }
-		  	// check that data array exists
-		  	if (!(d[ministry][cat]['% of expenses'].hasOwnProperty(type))){
-		  		// initiate the array
-		  		d[ministry][cat]['% of expenses'][type] = [];
-		  	}
-		  	// calculate
-		  	var expenses = d[ministry]['Total Operating Expenses'][type].slice(-1)[0];
-		  	var amount;
-		  	var percent = null;
-		  	if (expenses !== null && expenses !== 0){
-		  		amount = d[ministry][cat]['Amount'][type].slice(-1)[0];
-		  		if (amount !== null){
-		  			percent = Math.round(amount / expenses * 10000) / 100;
-		  		}
-		  	}
-		  	d[ministry][cat]['% of expenses'][type].push(percent);
+			// calculate percent of expenses
+			for (cat in d[ministry]){
+				// ignore technical categories
+				if (groupings['NonCB'].indexOf(cat) === -1){
+					if (!(d[ministry][cat].hasOwnProperty('% of expenses'))){
+			  		d[ministry][cat]['% of expenses'] = {};
+				  }
+			  	// check that data array exists
+			  	if (!(d[ministry][cat]['% of expenses'].hasOwnProperty(type))){
+			  		// initiate the array
+			  		d[ministry][cat]['% of expenses'][type] = [];
+			  	}
+			  	// calculate
+			  	var expenses = d[ministry]['Total Operating Expenses'][type].slice(-1)[0];
+			  	var amount;
+			  	var percent = null;
+			  	if (expenses !== null && expenses !== 0){
+			  		amount = d[ministry][cat]['Amount'][type].slice(-1)[0];
+			  		if (amount !== null){
+			  			percent = Math.round(amount / expenses * 10000) / 100;
+			  		}
+			  	}
+			  	d[ministry][cat]['% of expenses'][type].push(percent);
+				}
 			}
 		}
 	} // end loop over rows
@@ -746,7 +748,7 @@ var loadAreaChart = function(){
     	enabled: false
     }
   });
-	
+
 	noteMissing('#container-2', missingData, (m == 'System'));
 }
 
