@@ -354,6 +354,61 @@ var loadCharts = function(order){
 	loadHeadline();
 };
 
+var addMissing = function(m, c, n){
+	return {
+		ministry: m,
+		category: c,
+		number: n
+	};
+};
+
+var noteMissing = function(chart, data, system){
+	if (data.length){
+		var numMissing = 0;
+		var missingLines = [];
+		if (system){
+			var mins = {
+				'PCMC': 0,
+				'PHFMC': 0,
+				'PMMC': 0,
+				'POLRMC': 0,
+				'PRMC': 0,
+				'PSFH': 0,
+				'PSJH-C': 0,
+				'PSJH-E': 0,
+				'PSJMC': 0,
+				'PSMEMC': 0,
+				'PSMH': 0,
+				'PUSMC': 0,
+				'PLC': 0,
+				'PMG': 0,
+				'PH Corp': 0
+			};
+			data.forEach(function(datum){
+				mins[datum.ministry] += datum.number;
+				numMissing += datum.number;
+			});
+			for (min in mins){
+				if (mins[min] > 0){
+					missingLines.push(min + ': ' + mins[min] + ' missing');
+				}
+			}
+			missingLines.push('________________<br>Please look at individual<br>ministries for more details.');
+		} else {
+			data.forEach(function(datum){
+				numMissing += datum.number;
+				missingLines.push(datum.category + ': ' + datum.number + ' missing');
+			});
+		}
+		$(chart).siblings('.warning').html('<a href="#" data-html="true" data-toggle="tooltip" ' + 
+			'title="' + missingLines.join('<br/>') + '">Note: ' + numberWithCommas(numMissing) + 
+			' data point' + (numMissing == 1 ? ' is' : 's are') + ' missing.</a>');
+		$('[data-toggle="tooltip"]').tooltip();
+	} else {
+		$(chart).siblings('.warning').empty();
+	}
+};
+
 var loadColumnChart = function(){
 	// select the data
 	var x = [];
@@ -543,6 +598,9 @@ var loadAreaChart = function(){
 	var y = [];
 	index = 10;
 	var unit = (['Billings', 'Amount at cost'].indexOf(u) == -1 ? u : 'Amount');
+	var missingData = [];
+
+	// add the data
 	groupings[ac].forEach(function(category){
 		if (d[m][category][unit][t].length && 
 			d[m][category][unit][t].reduce(function(a,b){return a+b;})){
@@ -551,6 +609,30 @@ var loadAreaChart = function(){
 				data: Array.prototype.slice.call(d[m][category][unit][t]).reverse(),
 				index: index
 			});
+		}
+		if (m !== 'System'){
+			var numMissing = 0;
+			d[m][category][unit][t].forEach(function(datum){
+				if (datum === null){
+					numMissing++;
+				}
+			});
+			if (numMissing > 0){
+				missingData.push(addMissing(m, category, numMissing));
+			}
+		} else {
+			// need to check each ministry
+			for (var mi in ministries){
+				var numMissing = 0;
+				d[mi][category][unit][t].forEach(function(datum){
+					if (datum === null){
+						numMissing++;
+					}
+				});
+				if (numMissing > 0){
+					missingData.push(addMissing(mi, category, numMissing));
+				}
+			}
 		}
 		index -= 1;
 	});
@@ -664,6 +746,8 @@ var loadAreaChart = function(){
     	enabled: false
     }
   });
+	
+	noteMissing('#container-2', missingData, (m == 'System'));
 }
 
 var loadTreeChart = function(){
