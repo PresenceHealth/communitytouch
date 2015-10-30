@@ -1,0 +1,11 @@
+# Setup
+title:            'Presence Health Community Benefit'
+url:              https://presencehealth.github.io/communitybenefit
+author:
+  name:           'Jonathan Giuffrida'
+
+# Custom vars
+version:          0.1
+
+github:
+  repo:           https://github.com/presencehealth/communitybenefit
