@@ -1,10 +1,16 @@
 <!DOCTYPE html>
+<script>
+var host = "presencehealth.github.io";
+if ((host == window.location.host) && (window.location.protocol != "https:"))
+    window.location.protocol = "https";
+</script>
 <html lang="en">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="css/cb.css">
+	<link rel="canonical" href="{{ site.url }}{{ page.url }}" />
 </head>
 <body>
 <div class="container-fluid">
