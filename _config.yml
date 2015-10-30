@@ -1,4 +1,5 @@
 # Setup
+enforce_ssl:      presencehealth.github.io/communitybenefit
 title:            'Presence Health Community Benefit'
 url:              https://presencehealth.github.io/communitybenefit
 author:
