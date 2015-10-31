@@ -8,7 +8,7 @@ var c = 'Total Community Benefit (IRS)'; // category
 var u = 'Amount'; // unit
 var t = 'Yearly'; // temporal
 var ac = 'Total Community Benefit (IRS)';  // area chart category
-var p = '2014'; // period
+var p = '2015'; // period
 
 var ministries = {
 	'PCMC': '0',
@@ -49,17 +49,17 @@ var ministries_abbr = {
 };
 
 var categories_abbr = {
-	'Total Community Benefit (IRS)': 'total community benefit (IRS)',
-	'Total Community Benefit (AG)': 'total community benefit (IL AG)',
+	'Total Community Benefit (IRS)': 'total community benefit (IRS definition)',
+	'Total Community Benefit (AG)': 'total community benefit (IL AG definition)',
 	'Total Means-Tested': 'means-tested community benefit',
 	'Proactive Community Benefit': 'proactive community benefit',
 	'Community Health': 'community health programs',
-	'Charity Care': 'financial assistance (charity care)',
+	'Charity Care': 'free and discounted medical care',
 	'Unreimbursed Medicaid': 'unreimbursed Medicaid services',
 	'Community Health Improvement': 'community health improvement services',
 	'Health Professions Education': 'health professions education',
 	'Subsidized Health Services': 'subsidized health services',
-	'Research': 'research expenses', 
+	'Research': 'research expenses',
 	'Cash/In-Kind Contributions': 'cash and in-kind donations',
 	'Community Building Activities': 'community building activities',
 	'Community Benefit Operations': 'community benefit operations',
@@ -71,11 +71,11 @@ var categories_abbr = {
 };
 
 var groupings = {
-	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education', 
-		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions', 
+	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
+		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
 		'Community Health'],
 	'Total Community Benefit (AG)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
-		'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall', 
+		'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall',
 		'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
 		'Subsidized Health Services (AG)', 'Other Community Benefits'],
 	'Total Means-Tested': ['Charity Care', 'Unreimbursed Medicaid'],
@@ -194,11 +194,11 @@ function loadData(ministry, r){
 				  	// add the data
 				  	d[ministry][category][unit][type].push(value);
 			    }
-			  }	  
+			  }
 			} // end loop over keys
 			// add aggregated data
-			['Community Health', 'Total Means-Tested', 'Proactive Community Benefit', 
-				'Total Community Benefit (IRS)', 
+			['Community Health', 'Total Means-Tested', 'Proactive Community Benefit',
+				'Total Community Benefit (IRS)',
 				'Total Community Benefit (AG)'].forEach(function(category){
 				key = category;
 				// checks
@@ -226,11 +226,11 @@ function loadData(ministry, r){
 							pieces = ['Subsidized Health Services',
 							'Cash/In-Kind Contributions', 'Community Health'];
 						} else if (category == 'Total Community Benefit (IRS)'){
-							pieces = ['Total Means-Tested', 'Proactive Community Benefit', 
+							pieces = ['Total Means-Tested', 'Proactive Community Benefit',
 							'Health Professions Education', 'Research'];
 						} else if (category == 'Total Community Benefit (AG)'){
 							pieces = ['Total Means-Tested', 'Health Professions Education',
-							'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall', 
+							'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall',
 							'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
 							'Subsidized Health Services (AG)', 'Other Community Benefits'];
 						}
@@ -245,29 +245,29 @@ function loadData(ministry, r){
 					}
 				});
 			});
-			// calculate percent of expenses
+			// calculate percent of revenue
 			for (cat in d[ministry]){
 				// ignore technical categories
 				if (groupings['NonCB'].indexOf(cat) === -1){
-					if (!(d[ministry][cat].hasOwnProperty('% of expenses'))){
-			  		d[ministry][cat]['% of expenses'] = {};
+					if (!(d[ministry][cat].hasOwnProperty('% of revenue'))){
+			  		d[ministry][cat]['% of revenue'] = {};
 				  }
 			  	// check that data array exists
-			  	if (!(d[ministry][cat]['% of expenses'].hasOwnProperty(type))){
+			  	if (!(d[ministry][cat]['% of revenue'].hasOwnProperty(type))){
 			  		// initiate the array
-			  		d[ministry][cat]['% of expenses'][type] = [];
+			  		d[ministry][cat]['% of revenue'][type] = [];
 			  	}
 			  	// calculate
-			  	var expenses = d[ministry]['Total Operating Expenses'][type].slice(-1)[0];
+			  	var revenue = d[ministry]['Net Patient Revenue'][type].slice(-1)[0];
 			  	var amount;
 			  	var percent = null;
-			  	if (expenses !== null && expenses !== 0){
+			  	if (revenue !== null && revenue !== 0){
 			  		amount = d[ministry][cat]['Amount'][type].slice(-1)[0];
 			  		if (amount !== null){
-			  			percent = Math.round(amount / expenses * 10000) / 100;
+			  			percent = Math.round(amount / revenue * 10000) / 100;
 			  		}
 			  	}
-			  	d[ministry][cat]['% of expenses'][type].push(percent);
+			  	d[ministry][cat]['% of revenue'][type].push(percent);
 				}
 			}
 		}
@@ -283,7 +283,7 @@ var loadFinished = function(){
 	// }
 	// load years
 	years.forEach(function(year){
-		if (year !== "2014"){
+		if (year !== "2015"){
 			$('#period').append('<option value="' + year + '">' + year + '</option>');
 		}
 	});
@@ -305,7 +305,7 @@ Highcharts.setOptions({
 	}
 });
 
-var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C', 
+var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
 	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A', '#666666'];
 
 // the charts
@@ -402,8 +402,8 @@ var noteMissing = function(chart, data, system){
 				missingLines.push(datum.category + ': ' + datum.number + ' missing');
 			});
 		}
-		$(chart).siblings('.warning').html('<a href="#" data-html="true" data-toggle="tooltip" ' + 
-			'title="' + missingLines.join('<br/>') + '">Note: ' + numberWithCommas(numMissing) + 
+		$(chart).siblings('.warning').html('<a href="#" data-html="true" data-toggle="tooltip" ' +
+			'title="' + missingLines.join('<br/>') + '">Note: ' + numberWithCommas(numMissing) +
 			' data point' + (numMissing == 1 ? ' is' : 's are') + ' missing.</a>');
 		$('[data-toggle="tooltip"]').tooltip();
 	} else {
@@ -432,8 +432,8 @@ var loadColumnChart = function(){
 	var o = {};
 	if (groupings['NonCB'].indexOf(c) !== -1){
 		for (mi in ministries){
-			if (d[mi][c]['Yearly'].length && 
-				d[mi][c]['Yearly'].reduce(function(a,b){return a+b;}) && 
+			if (d[mi][c]['Yearly'].length &&
+				d[mi][c]['Yearly'].reduce(function(a,b){return a+b;}) &&
 				(mi !== 'System' || c == 'Cost-to-Charge Ratio')){
 				orderedMinistries.push({
 					name: mi,
@@ -443,9 +443,9 @@ var loadColumnChart = function(){
 		}
 	} else {
 		for (mi in ministries){
-			if (d[mi][c][u]['Yearly'].length && 
-				d[mi][c][u]['Yearly'].reduce(function(a,b){return a+b;}) && 
-				(mi !== 'System' || u == '% of expenses')){
+			if (d[mi][c][u]['Yearly'].length &&
+				d[mi][c][u]['Yearly'].reduce(function(a,b){return a+b;}) &&
+				(mi !== 'System' || u == '% of revenue')){
 				orderedMinistries.push({
 					name: mi,
 					value: d[mi][c][u]['Yearly'][0]
@@ -469,8 +469,8 @@ var loadColumnChart = function(){
 	if (groupings['NonCB'].indexOf(c) !== -1){
 		for (j=0; j<orderedMinistries.length; j++){
 			mi = orderedMinistries[j]['name'];
-			if (d[mi][c]['Yearly'].length && 
-				d[mi][c]['Yearly'].reduce(function(a,b){return a+b;}) && 
+			if (d[mi][c]['Yearly'].length &&
+				d[mi][c]['Yearly'].reduce(function(a,b){return a+b;}) &&
 				(mi !== 'System' || c == 'Cost-to-Charge Ratio')){
 				x.push(mi);
 				// add the data
@@ -491,9 +491,9 @@ var loadColumnChart = function(){
 	} else {
 		for (j=0; j<orderedMinistries.length; j++){
 			mi = orderedMinistries[i=j]['name'];
-			if (d[mi][c][u]['Yearly'].length && 
-				d[mi][c][u]['Yearly'].reduce(function(a,b){return a+b;}) && 
-				(mi !== 'System' || u == '% of expenses')){
+			if (d[mi][c][u]['Yearly'].length &&
+				d[mi][c][u]['Yearly'].reduce(function(a,b){return a+b;}) &&
+				(mi !== 'System' || u == '% of revenue')){
 				x.push(mi);
 				// add the data
 				// make System columns stand out
@@ -517,10 +517,10 @@ var loadColumnChart = function(){
 
 	// get the y axis title
 
-	if (u == '% of expenses'){
-		var y_title = '% of expenses';
+	if (u == '% of revenue'){
+		var y_title = '% of revenue';
 		var tooltip = '<tr style="font-size:14px;"><td style="color:{series.color};padding:0">{series.name}: </td>' +
-          '<td style="padding:0"><b>{point.y:,.2f}%</b> of expenses</td></tr>';
+          '<td style="padding:0"><b>{point.y:,.2f}%</b> of revenue</td></tr>';
 	} else if (u == 'Persons served'){
 		var y_title = u;
 		var tooltip = '<tr style="font-size:14px;"><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -535,7 +535,7 @@ var loadColumnChart = function(){
           '<td style="padding:0"><b>${point.y:,.0f}</b></td></tr>';
 	}
 
-	// highcharts	
+	// highcharts
 	if (columnChart){
 		columnChart.destroy();
 	}
@@ -583,7 +583,7 @@ var loadColumnChart = function(){
       			}
       		}
       	}
-      }, 
+      },
 
     },
     series: y,
@@ -604,7 +604,7 @@ var loadAreaChart = function(){
 
 	// add the data
 	groupings[ac].forEach(function(category){
-		if (d[m][category][unit][t].length && 
+		if (d[m][category][unit][t].length &&
 			d[m][category][unit][t].reduce(function(a,b){return a+b;})){
 			y.push({
 				name: category,
@@ -638,12 +638,12 @@ var loadAreaChart = function(){
 		}
 		index -= 1;
 	});
-	
+
 	// get the y axis title
-	if (u == '% of expenses'){
-		var y_title = '% of expenses';
+	if (u == '% of revenue'){
+		var y_title = '% of revenue';
 		var tooltip = '<tr style="font-size:12px;"><td style="color:{series.color};padding:0">{series.name}: </td>' +
-          '<td style="padding:0"><b>{point.y:,.2f}%</b> of expenses</td></tr>';
+          '<td style="padding:0"><b>{point.y:,.2f}%</b> of revenue</td></tr>';
 	} else if (u == 'Persons served'){
 		var y_title = u;
 		var tooltip = '<tr style="font-size:12px;"><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -654,7 +654,7 @@ var loadAreaChart = function(){
           '<td style="padding:0"><b>${point.y:,.0f}</b></td></tr>';
 	}
 
-	// highcharts	
+	// highcharts
 	if (areaChart){
 		areaChart.destroy();
 	}
@@ -689,10 +689,10 @@ var loadAreaChart = function(){
       	$.each(this.points, function(i, point){
       		sum += point.y;
       	});
-      	s += '<tr style="font-size:12px;border-bottom:2px solid #666;">' + 
+      	s += '<tr style="font-size:12px;border-bottom:2px solid #666;">' +
       			'<td style="padding:0;"">Total: </td><td style="padding:0; text-align:right;"><b>';
-      	if (u == '% of expenses'){
-      		s += sum.toFixed(2) + '% of expenses';
+      	if (u == '% of revenue'){
+      		s += sum.toFixed(2) + '% of revenue';
       	} else if (u == 'Persons served'){
       		s += numberWithCommas(sum) + ' persons served';
       	} else if (u == 'Amount'){
@@ -701,11 +701,11 @@ var loadAreaChart = function(){
       	s += '</b></td></tr>';
       	// loop over series
       	$.each(this.points, function(i, point){
-      		s += '<tr style="font-size:12px;">' + 
-      			'<td style="color:' + point.series.color + ';padding:0">' + 
+      		s += '<tr style="font-size:12px;">' +
+      			'<td style="color:' + point.series.color + ';padding:0">' +
       			point.series.name + ': </td><td style="padding:0; text-align:right;"><b>';
-      		if (u == '% of expenses'){
-      			s += point.y.toFixed(2) + '%</b> of expenses';
+      		if (u == '% of revenue'){
+      			s += point.y.toFixed(2) + '%</b> of revenue';
       		} else if (u == 'Persons served'){
       			s += numberWithCommas(point.y) + '</b> persons served';
       		} else if (u == 'Amount'){
@@ -764,7 +764,7 @@ var loadTreeChart = function(){
 	}
 	var unit = (['Billings', 'Amount at cost'].indexOf(u) == -1 ? u : 'Amount');
 	groupings[ac].forEach(function(category){
-		if (d[m][category][unit][t].length && 
+		if (d[m][category][unit][t].length &&
 			d[m][category][unit][t].reduce(function(a,b){return a+b;})){
 			y.push({
 				name: category,
@@ -772,11 +772,11 @@ var loadTreeChart = function(){
 			});
 		}
 	});
-	
+
 	// get the y axis title
-	if (u == '% of expenses'){
+	if (u == '% of revenue'){
 		var tooltip = '<tr style="font-size:14px;"><td style="color:{point.color};padding:0">{point.name}: </td>' +
-          '<td style="padding:0"><b>{point.value:,.2f}%</b> of expenses</td></tr>';
+          '<td style="padding:0"><b>{point.value:,.2f}%</b> of revenue</td></tr>';
 	} else if (u == 'Persons served'){
 		var tooltip = '<tr style="font-size:14px;"><td style="color:{point.color};padding:0">{point.name}: </td>' +
           '<td style="padding:0"><b>{point.value:,.0f}</b> persons served</td></tr>';
@@ -836,7 +836,7 @@ var loadLineChart = function(){
 	var dollarsTooltip = '<span style="color:{point.color}">{series.name}</span>: <b>${point.y:,.0f}</b><br/>';
 	personsTooltip = '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.0f}</b><br/>';
 	if (groupings['NonCB'].indexOf(c) !== -1){
-		if (d[m][c][t].length && 
+		if (d[m][c][t].length &&
 			d[m][c][t].reduce(function(a,b){return a+b;})){
 			amount = Array.prototype.slice.call(d[m][c][t]).reverse();
 		};
@@ -851,10 +851,10 @@ var loadLineChart = function(){
 		amountName = c;
 		personsName = '';
 	} else {
-		// capture both the amount (either $ or % of expenses) and the persons helped
+		// capture both the amount (either $ or % of revenue) and the persons helped
 		// persons served
 		if (d[m][c]['Persons served'] !== undefined &&
-			d[m][c]['Persons served'][t].length && 
+			d[m][c]['Persons served'][t].length &&
 			d[m][c]['Persons served'][t].reduce(function(a,b){return a+b;})){
 			persons = Array.prototype.slice.call(d[m][c]['Persons served'][t]).reverse();
 			personsName = 'Persons served';
@@ -877,8 +877,8 @@ var loadLineChart = function(){
 			amountTitle = 'Amount ($)';
 			amountName = amountVariable;
 			amountTooltip = dollarsTooltip;
-		} else if (u == '% of expenses'){
-			amountVariable = '% of expenses';
+		} else if (u == '% of revenue'){
+			amountVariable = '% of revenue';
 			amountTitle = 'Percent';
 			amountName = amountVariable;
 			amountTooltip = percentTooltip;
@@ -889,13 +889,13 @@ var loadLineChart = function(){
 			amountName = amountVariable;
 			amountTooltip = dollarsTooltip;
 		}
-		if (d[m][c][amountVariable][t].length && 
+		if (d[m][c][amountVariable][t].length &&
 			d[m][c][amountVariable][t].reduce(function(a,b){return a+b;})){
 			amount = Array.prototype.slice.call(d[m][c][amountVariable][t]).reverse();
 		};
 	}
 
-	// highcharts	
+	// highcharts
 	if (lineChart){
 		lineChart.destroy();
 	}
@@ -914,9 +914,9 @@ var loadLineChart = function(){
     xAxis: {
       categories: x,
       // make it clear system-wide quarterly data is not to be trusted (yet)
-      plotBands: (t == 'Quarterly' && m == 'System' ? [{ 
-      	color: '#ddd', 
-      	from:  0, 
+      plotBands: (t == 'Quarterly' && m == 'System' ? [{
+      	color: '#ddd',
+      	from:  0,
       	to: 16
       }] : null),
       crosshair: true,
@@ -928,7 +928,7 @@ var loadLineChart = function(){
         style: {
         	color: colors[1]
         }
-      }, 
+      },
       labels: {
       	style: {
       		color: colors[1]
@@ -993,11 +993,11 @@ var loadLineChart = function(){
     	enabled: false
     }
   });
-	
+
 	// if medicaid amount or amount at cost, show the other unit too
 	if (c == 'Unreimbursed Medicaid' && (u == 'Amount' || u == 'Amount at cost')){
 		amountVariable = (u == 'Amount' ? 'Amount at cost' : 'Amount');
-		if (d[m][c][amountVariable][t].length && 
+		if (d[m][c][amountVariable][t].length &&
 			d[m][c][amountVariable][t].reduce(function(a,b){return a+b;})){
 			var secondAmount = Array.prototype.slice.call(d[m][c][amountVariable][t]).reverse();
 			lineChart.addSeries({
@@ -1023,10 +1023,10 @@ var loadHeadline = function(){
 		var timeIndex = years.indexOf(p);
 	} else {
 		var timeIndex = quarters.indexOf(p);
-	}	
+	}
 	var value;
-	if (d[m][c]['Amount'] && 
-			d[m][c]['Amount'][t][timeIndex] && 
+	if (d[m][c]['Amount'] &&
+			d[m][c]['Amount'][t][timeIndex] &&
 			d[m][c]['Amount'][t][timeIndex] !== 0 && groupings['NonCB'].indexOf(c) == -1){
 		value = numberWithCommas(d[m][c]['Amount'][t][timeIndex]);
 		// build headline
@@ -1037,12 +1037,12 @@ var loadHeadline = function(){
 			headline += p;
 		}
 		headline += ', <span id="headline-min">' + ministries_abbr[m] + '</span> ';
-		headline += ' provided <span id="headline-num">$' + value + '</span> in <span id="headline-cat">' + 
+		headline += ' provided <span id="headline-num">$' + value + '</span> in <span id="headline-cat">' +
 			categories_abbr[c] + '</span>';
-		if (d[m][c]['Persons served'] !== undefined && 
-			d[m][c]['Persons served'][t][timeIndex] && 
+		if (d[m][c]['Persons served'] !== undefined &&
+			d[m][c]['Persons served'][t][timeIndex] &&
 			d[m][c]['Persons served'][t][timeIndex] !== 0){
-			headline += ', helping <span id="headline-per">' + numberWithCommas(d[m][c]['Persons served'][t][timeIndex]) + 
+			headline += ', helping <span id="headline-per">' + numberWithCommas(d[m][c]['Persons served'][t][timeIndex]) +
 			'</span> people in our communities.';
 		} else {
 			headline += ' to our communities.';
@@ -1065,7 +1065,7 @@ function numberWithCommas(x) {
 
 // triggers on page load
 $(document).ready(function(){
-	
+
 	function changeCategory(cat){
 		c = cat;
 		// change units
@@ -1120,7 +1120,7 @@ $(document).ready(function(){
 					u = 'Amount';
 				}
 				// hide person served if necessary
-				if (['Medicare Shortfall', 'Bad Debt', 'Language Assistance Services', 
+				if (['Medicare Shortfall', 'Bad Debt', 'Language Assistance Services',
 					'Volunteer Services', 'total Community Benefit (AG)'].indexOf(c) !== -1){
 					$('#unit .persons-unit').addClass('disabled');
 					if (u == 'Persons served'){
@@ -1179,7 +1179,7 @@ $(document).ready(function(){
 		u = $(this).data('name');
 		loadCharts('u');
 	});
-	
+
 	/******************* ministry change */
 	$('#ministry #ministrySelect').on('change', function(e){
 		m = this.value;
@@ -1205,7 +1205,7 @@ $(document).ready(function(){
 		$('.period-dropdown label').text(t);
 		loadCharts('t');
 	});
-	
+
 	/******************* period change */
 	$('#period').on('change', function(e){
 		p = this.value;
@@ -1217,7 +1217,7 @@ $(document).ready(function(){
 	// var shadeChart = function(id){
 	// 	var gradient = {
 	// 		radialGradient: {cx: 0.5, cy: 0.5, r: 0.5},
- //                 stops: [ [0, '#bbb'], 
+ //                 stops: [ [0, '#bbb'],
  //                          [1, '#eee'] ]
  //        };
 	// 	$(id).highcharts().chartBackground.attr({
@@ -1283,12 +1283,12 @@ use colorByPoint to color line chart columns in a pattern (to show quarters bett
 add error message for no-javascript or if the data won't load
 */
 
-/* the following changes the area chart to percent 
+/* the following changes the area chart to percent
 
 for(var i =0; i < areaChart.series.length; i++){
         areaChart.series[i].update({
-            stacking: 'normal'   
-        }, false);   
+            stacking: 'normal'
+        }, false);
     }
 areaChart.redraw();
 
