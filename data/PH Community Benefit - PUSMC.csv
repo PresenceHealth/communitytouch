@@ -1,9 +1,9 @@
 Period,Total Operating Expenses,Net Patient Revenue,Cost-to-Charge Ratio,Charity Care - Amount,Charity Care - Billings,Charity Care - Persons served,Unreimbursed Medicaid - Amount,Unreimbursed Medicaid - Amount at cost,Unreimbursed Medicaid - Billings,Unreimbursed Medicaid - Persons served,Community Health Improvement - Amount,Community Health Improvement - Persons served,Health Professions Education - Amount,Health Professions Education - Persons served,Subsidized Health Services - Amount,Subsidized Health Services - Persons served,Research - Amount,Research - Persons served,Cash/In-Kind Contributions - Amount,Cash/In-Kind Contributions - Persons served,Community Building Activities - Amount,Community Building Activities - Persons served,Community Benefit Operations - Amount,Community Benefit Operations - Persons served,Medicare Shortfall - Amount,Bad Debt - Amount,Language Assistance Services - Amount,Volunteer Services - Amount,Subsidized Health Services (AG) - Amount,Other Community Benefits - Amount
 2015,96167997,104057181,0.1759,1483512,8254896,,,,,,,,,,,,,,,,,,,,,9386219,,,,
-2015-Q4,24264954,25630376,0.1764,347842.6314,1963546,,,,,,,,,,,,,,,,,,,,,2004418,,,,
-2015-Q3,24135996,25704204,0.1812,496317.7803,2656408,,,,,,,,,,,,,,,,,,,,,1848569,,,,
-2015-Q2,23725047.75,26708305.75,0.1699,276311.4081,1571218,618,2809310,5465944,32206052,7475,,,,,,,,,,,,,,,,3186676.875,,,,
-2015-Q1,24041999.25,26014295.25,0.1759,363040.6388,2063724,529,1492351,5420340,32264760,7831,,,,,,,,,,,,,,,,2346554.625,,,,
+2015-Q4,24041999.25,26014295.25,0.1759,363040.6388,2063724,,,,,,,,,,,,,,,,,,,,,2346554.625,,,,
+2015-Q3,23725047.75,26708305.75,0.1699,276311.4081,1571218,,,,,,,,,,,,,,,,,,,,,3186676.875,,,,
+2015-Q2,24135996,25704204,0.1812,496317.7803,2656408,618,2809310,5465944,32206052,7475,,,,,,,,,,,,,,,,1848569,,,,
+2015-Q1,24264954,25630376,0.1764,347842.6314,1963546,529,1492351,5420340,32264760,7831,,,,,,,,,,,,,,,,2004418,,,,
 2014,98475433,96458405,0.1684,3419973,20308628,1407,5247576,21674079,128705932,28500,209649,34028,614909,414,0,0,41694,0,29473,1,208546,6172,293006,11344,501940,5153211,519,160162,0,501552
 2014-Q4,,24114601,,510584,5077157,616,2602408,5387331,,7023,48309,11307,131254,132,0,0,41694,0,1563,0,53974,943,84224,2514,-330883,5178741,82,103966,48309,138197
 2014-Q3,,24114601,,460033,5077157,173,1791443,5914145,,7827,55020,5468,37347,58,0,0,0,0,3750,0,52329,2706,66443,2451,65692,1364791,281,20304,55020,118290
