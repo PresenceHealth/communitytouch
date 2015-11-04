@@ -2,13 +2,19 @@
 ***************** 	INITIALIZATIONS AND PREP
 *********************************************/
 
+// if user requests, show future data
+if ("future" in QueryString && QueryString.future == "true"){
+	var start = 0;
+} else {
+	var start = 3;
+}
 // global selections: initial values are defaults
 var m = 'System'; // ministry
 var c = 'Total Community Benefit (IRS)'; // category
 var u = 'Amount'; // unit
 var t = 'Yearly'; // temporal
 var ac = 'Total Community Benefit (IRS)';  // area chart category
-var p = '2015'; // period
+var p = (start == 0 ? '2015' : '2014'); // period
 
 var ministries = {
 	'PCMC': '0',
@@ -17,8 +23,8 @@ var ministries = {
 	'POLRMC': '577443528',
 	'PRMC': '774042577',
 	'PSFH': '1263218171',
-	'PSJH-C': '1760255408',
-	'PSJH-E': '1806753725',
+	'PSJHC': '1760255408',
+	'PSJHE': '1806753725',
 	'PSJMC': '632576455',
 	'PSMEMC': '150505737',
 	'PSMH': '1478920126',
@@ -36,11 +42,11 @@ var ministries_abbr = {
 	'POLRMC': 'Presence Our Lady of the Resurrection Medical Center',
 	'PRMC': 'Presence Resurrection Medical Center',
 	'PSFH': 'Presence Saint Francis Hospital',
-	'PSJH-C': 'Presence Saint Joseph Hospital - Chicago',
-	'PSJH-E': 'Presence Saint Joseph Hospital - Elgin',
+	'PSJHC': 'Presence Saint Joseph Hospital - Chicago',
+	'PSJHE': 'Presence Saint Joseph Hospital - Elgin',
 	'PSJMC': 'Presence Saint Joseph Medical Center',
 	'PSMEMC': 'Presence Saints Mary and Elizabeth Medical Center',
-	'PSMH': 'Presence St. Mary\'s Hospital',
+	'PSMH': 'Presence St. Mary&rsquo;s Hospital',
 	'PUSMC': 'Presence United Samaritans Medical Center',
 	'PMG': 'Presence Medical Group',
 	'PLC': 'Presence Life Connections',
@@ -127,7 +133,7 @@ function loadData(ministry, r){
 	var type, unit, category, value; // vars for the loop
 	var fillInTemporal = !(temporalFilled);
 	temporalFilled = true;
-	for (i=0; i<r.length; i++){
+	for (i=start; i<r.length; i++){
 		if (r[i]['Period'] !== ""){
 			// if Period is a quarter, set type to quarterly, else yearly
 			type = (String(r[i]['Period']).indexOf('-') === -1 ? 'Yearly' : 'Quarterly');
@@ -283,9 +289,7 @@ var loadFinished = function(){
 	// }
 	// load years
 	years.forEach(function(year){
-		if (year !== "2015"){
-			$('#period').append('<option value="' + year + '">' + year + '</option>');
-		}
+		$('#period').append('<option value="' + year + '">' + year + '</option>');
 	});
 	// load the initial chart
 	$('#progress-bar').hide();
