@@ -73,7 +73,7 @@ var categories_abbr = {
 	'Total Means-Tested': 'means-tested community benefit',
 	'Proactive Community Benefit': 'proactive community benefit',
 	'Community Health': 'community health programs',
-	'Charity Care': 'free and discounted medical care',
+	'Charity Care': 'financial assistance',
 	'Unreimbursed Medicaid': 'unreimbursed Medicaid services',
 	'Community Health Improvement': 'community health improvement services',
 	'Health Professions Education': 'health professions education',
@@ -82,7 +82,7 @@ var categories_abbr = {
 	'Cash/In-Kind Contributions': 'cash and in-kind donations',
 	'Community Building Activities': 'community building activities',
 	'Community Benefit Operations': 'community benefit operations',
-	'Medicare Shortfall': 'Medicare shortfall',
+	'Medicare Shortfall': 'unreimbursed Medicare services',
 	'Bad Debt': 'uncollected debts',
 	'Language Assistance Services': 'language assistance services',
 	'Volunteer Services': 'volunteer programs',
@@ -116,9 +116,9 @@ var groupings = {
 	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
 		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
 		'Community Health'],
-	'Total Community Benefit (AG)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
-		'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall',
-		'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
+	'Total Community Benefit (AG)': ['Charity Care', 'Unreimbursed Medicaid', 
+		'Health Professions Education',	'Research', 'Cash/In-Kind Contributions', 
+		'Medicare Shortfall', 'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
 		'Subsidized Health Services (AG)', 'Other Community Benefits'],
 	'Total Means-Tested': ['Charity Care', 'Unreimbursed Medicaid'],
 	'Proactive Community Benefit': ['Community Health Improvement', 'Community Building Activities', 
@@ -269,8 +269,9 @@ function loadData(ministry, r){
 						}	else if (category == 'Total Means-Tested'){
 							pieces = ['Charity Care', 'Unreimbursed Medicaid'];
 						} else if (category == 'Proactive Community Benefit'){
-							pieces = ['Subsidized Health Services',
-							'Cash/In-Kind Contributions', 'Community Health'];
+							pieces = ['Community Health Improvement', 'Community Building Activities', 
+		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
+		'Language Assistance Services', 'Volunteer Services'];
 						} else if (category == 'Total Community Benefit (IRS)'){
 							pieces = ['Total Means-Tested', 'Proactive Community Benefit',
 							'Health Professions Education', 'Research'];
@@ -281,7 +282,11 @@ function loadData(ministry, r){
 							'Subsidized Health Services (AG)', 'Other Community Benefits'];
 						}
 						pieces.forEach(function(piece){
-							agg += d[ministry][piece][unit][type].slice(-1)[0];
+							try {
+								agg += d[ministry][piece][unit][type].slice(-1)[0];
+							} catch(err){
+								// pass
+							}
 						});
 						if (agg != 0){
 							d[ministry][category][unit][type].push(agg);
@@ -592,10 +597,10 @@ var loadColumnChart = function(){
     },
     colors: [colors[1], colors[3], colors[4]],
     title: {
-      text: 'Ministry Comparison'
+      text: 'All Ministries, Annual'
     },
     subtitle: {
-      text: 'Click a bar to view that ministry, or click on previous years to see more bars'
+      text: 'Click a bar to view that ministry, or click on previous years to see more bars. This is for reference only: ministries are different and not meant to be compared to each other.'
     },
     xAxis: {
       categories: x,
@@ -960,7 +965,7 @@ var loadLineChart = function(){
     xAxis: {
       categories: x,
       // make it clear system-wide quarterly data is not to be trusted (yet)
-      plotBands: (t == 'Quarterly' && m == 'System' ? [{
+      plotBands: (t == 'Quarterly' && m == 'System' && earlier ? [{
       	color: '#ddd',
       	from:  0,
       	to: 15.5
