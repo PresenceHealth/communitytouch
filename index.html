@@ -14,14 +14,9 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 </head>
 <body>
 <div class="container-fluid">
-	<div class="row header">
-		<div class="col-xs-3"><img src="logo.GIF" height="33" width="200" style="margin-top: 5px;"></div>
-		<div class="col-xs-6">
-			<h2 style="text-align: center;">Community Benefit</h2>
-		</div>
-	</div>
 	<div class="row">
 		<div id="options-bar" class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+			<a href="http://presencehealth.org"><img src="logo.png" class="logo" height="37" width="222" style="margin-top: 5px;"></a>
 			<h3> </h3>
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			  <div class="panel panel-default">
@@ -34,8 +29,8 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 			    </div>
 			    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
 			      <div class="panel-body">
-			        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-			        <p><a href="#" class="btn" onclick="$('#collapseOne').collapse('hide');">Got it!</a></p>
+			        <p>Community benefit is an example of how Catholic health systems like Presence Health live out their mission to care for the most vulnerable in their communities. Community benefit includes programs that improve access to health care services, enhance the health of the community, advance medical or health knowledge, or relieve the burden of government. As a Catholic health system, Presence Health adheres to the Catholic Health Association&rsquo;s standards for planning, delivering, and reporting our community benefit efforts. Under the Affordable Care Act, the Internal Revenue Service (adopting the CHA guidelines) requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities. Programs do not count as community benefit if they are primarily undertaken for marketing purposes or are unrelated to the mission of the organization. Most community benefit programs are provided to the community at large and not restricted to patients.</p>
+			        <p>This tool is intended for internal planning purposes only and may not contain the most updated numbers. To view Presence Health's annual community benefit reports, visit the <a href="http://presencehealth.org/community-reports/">Community Reports</a> on our website.</p>
 			      </div>
 			    </div>
 			  </div>
@@ -49,8 +44,8 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 			    </div>
 			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 			      <div class="panel-body">
-			        Not all data may be accurate or complete. See notes below the graphs.
-			        <p><a href="#" onclick="$('#collapseTwo').collapse('hide');">Got it!</a></p>
+			        You can use this visualization tool to learn more about the community benefit that Presence Health ministries provide to our communities every day. To look at individual ministries, select one from the <b>Ministry</b> drop-down. Select different categories of community benefit under <b>Category</b>. Change between dollars, persons served, and percent of revenue under <b>Units</b>. You can switch between <b>Yearly</b> and <b>Quarterly</b> numbers. Data before 2012 is less complete, but you can view it by selecting the appropriate checkbox. You can save a picture of a chart by clicking on the button in the top-right of the chart.</p>
+			        <p>Data may be incomplete and should be used with caution. See notes below the graphs to identify what data points are missing. Because of how yearly community benefit is calculated, it may not be the exact sum of the quarterly numbers. Some categories tend to be reported primarily at the end of the year, so the quarterly numbers are not always meaningful.</p>
 			      </div>
 			    </div>
 			  </div>
@@ -67,11 +62,10 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 							<option value="PCMC">Presence Covenant Medical Center</option>
 							<option value="PHFMC">Presence Holy Family Medical Center</option>
 							<option value="PMMC">Presence Mercy Medical Center</option>
-							<option value="POLRMC">Presence Our Lady of the Resurrection Medical Center</option>
 							<option value="PRMC">Presence Resurrection Medical Center</option>
 							<option value="PSFH">Presence Saint Francis Hospital</option>
-							<option value="PSJH-C">Presence Saint Joseph Hospital - Chicago</option>
-							<option value="PSJH-E">Presence Saint Joseph Hospital - Elgin</option>
+							<option value="PSJHC">Presence Saint Joseph Hospital - Chicago</option>
+							<option value="PSJHE">Presence Saint Joseph Hospital - Elgin</option>
 							<option value="PSJMC">Presence Saint Joseph Medical Center</option>
 							<option value="PSMEMC">Presence Saints Mary and Elizabeth Medical Center</option>
 							<option value="PSMH">Presence St. Mary&nbsp;s Hospital</option>
@@ -122,7 +116,7 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="form-group" id="unit">
-							<label for="unit">Unit</label>
+							<label for="unit">Units</label>
 							<div class="btn-group btn-group-justified" role="group" aria-label="...">
 							  <div class="btn-group amount-dropdown" role="group" style="display: none;">
 							  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -142,10 +136,16 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 					</div>
 					<div class="col-xs-12">
 						<div class="form-group">
-							<label for="temporal">Period</label>
+							<label for="temporal">Time Period</label>
 							<div class="btn-group btn-group-justified" id="temporal" role="group" aria-label="...">
 							  <a type="button" class="btn btn-default active" data-name="Yearly">Yearly</a>
 							  <a type="button" class="btn btn-default" data-name="Quarterly">Quarterly</a>
+							</div>
+							<div class="checkbox">
+							  <label>
+							    <input type="checkbox" value="" id="earlier-data">
+							    Include data earlier than 2012
+							  </label>
 							</div>
 						</div><!-- temporal -->
 					</div>
@@ -157,6 +157,7 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 			<div class="row">
 				<div class="col-xs-12 headline">
 					<h3></h3>
+					<p></p>
 				</div>
 				<div class="col-xs-12 col-lg-6">
 					<div id="progress-bar" class="progress">
@@ -191,11 +192,11 @@ if ((host == window.location.host) && (window.location.protocol != "https:"))
 			<footer role="contentinfo">
 				<nav role="navigation">
 					<ul>
-						<li><a href="http://www.presencehealth.org/">Presence Health System</a></li>
+						<li><a href="http://www.presencehealth.org/">Presence Health Network</a></li>
 						<li><a href="http://www.presencehealth.org/community-reports">Presence Community Health</a></li>
 						<li><a href="http://github.com/presencehealth">Join Us on GitHub</a></li>
 						<li style="font-weight: normal;">Charts by <a href="http://www.highcharts.com/">Highcharts</a></li>
-						<li style="font-weight: normal;">Copyright &copy; 2015 Presence Health</li>
+						<li style="font-weight: normal;">Copyright &copy; 2016 Presence Health</li>
 					</ul>
 				</nav>
 			</footer>

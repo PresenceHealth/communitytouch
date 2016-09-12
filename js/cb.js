@@ -1,20 +1,33 @@
-/*******************************************
+/******************************************
 ***************** 	INITIALIZATIONS AND PREP
 *********************************************/
+
+var m = 'System', 
+		start = 0,
+		earlier = false;
 
 // if user requests, show future data
 if ("future" in QueryString && QueryString.future == "true"){
 	var start = 0;
-} else {
-	var start = 3;
 }
+
+// and show specific ministry
+if ("ministry" in QueryString && ['PCMC', 'PHFMC', 'PMMC', 'POLRMC', 'PRMC', 'PSJHC', 'PSJHE', 'PSJMC', 'PSMEMC', 'PSMH', 'PUSMC', 'PMG', 'PLC', 'PH Corp'].indexOf(QueryString.ministry) !== -1){
+	m = QueryString.ministry;
+	console.log(m);
+}
+
+if ("earlier" in QueryString && QueryString.earlier == "true"){
+	earlier = true;
+}
+
 // global selections: initial values are defaults
-var m = 'System'; // ministry
+// var m = 'System'; // ministry
 var c = 'Total Community Benefit (IRS)'; // category
 var u = 'Amount'; // unit
 var t = 'Yearly'; // temporal
 var ac = 'Total Community Benefit (IRS)';  // area chart category
-var p = (start == 0 ? '2015' : '2014'); // period
+var p = (start == 0 ? '2015' : '2015'); // period
 
 var ministries = {
 	'PCMC': '0',
@@ -53,7 +66,7 @@ var ministries_abbr = {
 	'PH Corp': 'Presence Health Corporate',
 	'System': 'Presence Health'
 };
-
+ 
 var categories_abbr = {
 	'Total Community Benefit (IRS)': 'total community benefit (IRS definition)',
 	'Total Community Benefit (AG)': 'total community benefit (IL AG definition)',
@@ -72,9 +85,32 @@ var categories_abbr = {
 	'Medicare Shortfall': 'Medicare shortfall',
 	'Bad Debt': 'uncollected debts',
 	'Language Assistance Services': 'language assistance services',
-	'Volunteer Services': 'staff volunteer services',
-	'Reactive/Proactive': 'reactive and proactive community benefit'
+	'Volunteer Services': 'volunteer programs',
 };
+
+var categories_definitions = {
+	'Total Community Benefit (IRS)': 'Under the Affordable Care Act, the Internal Revenue Service requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities.',
+	'Total Community Benefit (AG)': 'The Illinois Attorney General requires all non-profit hospitals to report community benefit annually. Their classification differs somewhat from the IRS&rsquo;s classification and includes Medicare shortfall and bad debts.',
+	'Total Means-Tested': 'Includes financial assistance and Medicaid shortfall, which are provided only to patients below certain income levels.',
+	'Proactive Community Benefit': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
+	'Community Health': '',
+	'Charity Care': 'Free or discounted health services provided to persons who cannot afford to pay all or portions of their medical bills and who meet the criteria specified in Presence Health\'s Financial Assistance Policy. Reported in terms of actual costs, not charges.',
+	'Unreimbursed Medicaid': 'The difference between net patient revenue and total expenses (cost of care) for Medicaid patients.',
+	'Community Health Improvement': 'Activities to improve community health such as educational sessions, health screenings, enrollment assistance, and care coordination programs offered community residents.',
+	'Health Professions Education': 'Costs incurred helping prepare future health care professionals such as residents, nursing students, or other health professionals.',
+	'Subsidized Health Services': 'Clinical service lines provided despite a financial loss because they meet an essential community need, such as a trauma center or behavioral health program.',
+	'Research': 'Clinical and community health research, as well as studies on health care delivery that are shared with others outside the organization such as cancer registries.',
+	'Cash/In-Kind Contributions': 'Cash or services donated to individuals or the community at large. In-kind donations include donations of food, equipment, space, or supplies.',
+	'Community Building Activities': 'Programs that address root causes of health problems, such as poverty, homelessness, and environmental hazards, as well as advocacy undertaken on behalf of the underserved and underprivileged.',
+	'Community Benefit Operations': 'Costs associated with dedicated community benefit staff and community health needs and assets assessments.',
+	'Medicare Shortfall': 'The difference between net patient revenue and total expenses (cost of care) for Medicare patients.',
+	'Bad Debt': 'Unpaid patient balances that are written off as uncollectable. Reported in terms of charges, not costs.',
+	'Language Assistance Services': 'Interpretation and translation services for patients and community residents.',
+	'Volunteer Services': 'Programs that mobilize volunteers, including both community members and Presence Health associates on their own time.',
+	'Cost-to-Charge Ratio': 'A rough measure of how efficiently services are being provided, the cost-to-charge ratio is used in calculating several kinds of community benefit. A lower cost-to-charge ratio indicates more efficient operations and tends to reduce the total community benefit. The cost-to-charge ratio does not indicate anything about the financial strength of a ministry, and should not be used to make comparisons between ministries.',
+	'Total Operating Expenses': '',
+	'Net Patient Revenue': '',
+}
 
 var groupings = {
 	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
@@ -85,9 +121,9 @@ var groupings = {
 		'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
 		'Subsidized Health Services (AG)', 'Other Community Benefits'],
 	'Total Means-Tested': ['Charity Care', 'Unreimbursed Medicaid'],
-	'Proactive Community Benefit': ['Subsidized Health Services',
-		'Cash/In-Kind Contributions', 'Community Building Activities', 'Community Health Improvement',
-		'Community Benefit Operations'],
+	'Proactive Community Benefit': ['Community Health Improvement', 'Community Building Activities', 
+		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
+		'Language Assistance Services', 'Volunteer Services'],
 	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'],
 	'Community Health': ['Community Building Activities', 'Community Health Improvement',
 		'Community Benefit Operations']
@@ -98,9 +134,9 @@ d = {};
 var completed = 0;
 function loadMinistry(ministry){
 	var newUrl = 'https://raw.githubusercontent.com/presencehealth/communitybenefit/master/data/PH Community Benefit - ' + ministry + '.csv';
-	var url = 'https://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=';
+	var url = 'https://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=' + ministries[ministry];
 	var oldUrl = 'https://docs.google.com/spreadsheets/d/1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo/pub?gid=' + ministries[ministry] + '&single=true&output=csv';
-	Papa.parse(newUrl,{
+	Papa.parse(url,{
 		download: true,
 		header: true,
 		dynamicTyping: true,
@@ -115,8 +151,11 @@ function loadMinistry(ministry){
 		}
 	});
 }
-for (var m in ministries){
-	loadMinistry(m);
+
+// initiate
+$('#period').append('<option value="' + p + '">' + p + '</option>');
+for (var mi in ministries){
+	loadMinistry(mi);
 }
 
 var years = [];
@@ -133,8 +172,9 @@ function loadData(ministry, r){
 	var type, unit, category, value; // vars for the loop
 	var fillInTemporal = !(temporalFilled);
 	temporalFilled = true;
+	var earliest = earlier ? 2008 : 2012;
 	for (i=start; i<r.length; i++){
-		if (r[i]['Period'] !== ""){
+		if (r[i]['Period'] !== "" && Number(String(r[i]['Period']).substr(0,4)) >= earliest){
 			// if Period is a quarter, set type to quarterly, else yearly
 			type = (String(r[i]['Period']).indexOf('-') === -1 ? 'Yearly' : 'Quarterly');
 			// fill out temporal values
@@ -289,7 +329,9 @@ var loadFinished = function(){
 	// }
 	// load years
 	years.forEach(function(year){
-		$('#period').append('<option value="' + year + '">' + year + '</option>');
+		if (year !== p){
+			$('#period').append('<option value="' + year + '">' + year + '</option>');
+		}
 	});
 	// load the initial chart
 	$('#progress-bar').hide();
@@ -380,8 +422,8 @@ var noteMissing = function(chart, data, system){
 				'POLRMC': 0,
 				'PRMC': 0,
 				'PSFH': 0,
-				'PSJH-C': 0,
-				'PSJH-E': 0,
+				'PSJHC': 0,
+				'PSJHE': 0,
 				'PSJMC': 0,
 				'PSMEMC': 0,
 				'PSMH': 0,
@@ -910,7 +952,7 @@ var loadLineChart = function(){
 		},
     colors: colors,
     title: {
-      text: 'Over Time'
+      text: c + ' Over Time'
     },
     subtitle: {
       text: ''
@@ -921,7 +963,7 @@ var loadLineChart = function(){
       plotBands: (t == 'Quarterly' && m == 'System' ? [{
       	color: '#ddd',
       	from:  0,
-      	to: 16
+      	to: 15.5
       }] : null),
       crosshair: true,
       minRange: 2
@@ -1056,6 +1098,7 @@ var loadHeadline = function(){
 		headline = ministries_abbr[m] + ', ' + c;
 	}
 	$('.headline h3').html(headline);
+	$('.headline p').html(categories_definitions[c]);
 }
 
 function numberWithCommas(x) {
@@ -1070,6 +1113,22 @@ function numberWithCommas(x) {
 // triggers on page load
 $(document).ready(function(){
 
+	if ("earlier" in QueryString && QueryString.earlier == "true"){
+		$('#earlier-data').prop('checked', true);
+	}
+
+	$('#ministrySelect').val(m);
+
+	$('#earlier-data').on('change', function(e){
+		var checked = $(this).prop('checked');
+		var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+		if (checked){
+			window.location = url + '?earlier=true';
+		} else {
+			window.location = url;
+		}
+	});
+
 	function changeCategory(cat){
 		c = cat;
 		// change units
@@ -1077,7 +1136,7 @@ $(document).ready(function(){
 		if (groupings['NonCB'].indexOf(c) !== -1){
 			// reset and disable all buttons
 			$('#unit .amount-dropdown').hide().find('.dropdown-name').text('Amount');
-			$('#unit .amount-unit').show()
+			$('#unit .amount-unit').show();
 			$('#unit .amount-dropdown button').attr('disabled', 'disabled').removeClass('active');
 			$('#unit .btn-default').removeClass('active').addClass('disabled');
 			u = 'Amount';
@@ -1088,7 +1147,7 @@ $(document).ready(function(){
 			$('#unit .btn-default').removeClass('disabled');
 			if (c == 'Unreimbursed Medicaid'){
 				// switch to amount dropdown
-				$('#unit .amount-unit').hide()
+				$('#unit .amount-unit').hide();
 				$('#unit .amount-dropdown').show().find('li').show();
 				// if unit was in the dropdown, keep it highlighted
 				if (u == 'Amount' || u == 'Amount at cost' || u == 'Billings'){
@@ -1097,7 +1156,7 @@ $(document).ready(function(){
 				}
 			} else if (c == 'Charity Care'){
 				// switch to amount dropdown
-				$('#unit .amount-unit').hide()
+				$('#unit .amount-unit').hide();
 				$('#unit .amount-dropdown').show().find('li').each(function(index){
 					if ($(this).find('a').data('name') == 'Amount at cost'){
 						$(this).hide();
@@ -1206,7 +1265,7 @@ $(document).ready(function(){
 		}
 		$('#temporal a').toggleClass('active');
 		t = $(this).data('name');
-		$('.period-dropdown label').text(t);
+		$('.period-dropdown label').text(t.substring(0, $(this).data('name').length - 2));
 		loadCharts('t');
 	});
 
@@ -1216,74 +1275,11 @@ $(document).ready(function(){
 		loadCharts('p');
 	});
 
-
-	// add hover effects so the user knows what affects what
-	// var shadeChart = function(id){
-	// 	var gradient = {
-	// 		radialGradient: {cx: 0.5, cy: 0.5, r: 0.5},
- //                 stops: [ [0, '#bbb'],
- //                          [1, '#eee'] ]
- //        };
-	// 	$(id).highcharts().chartBackground.attr({
-	// 		fill: gradient
-	// 	});
-	// }
-	// var unshadeChart = function(id){
-	// 	$(id).highcharts().chartBackground.attr({
-	// 		fill: '#fff'
-	// 	});
-	// }
-	// $('#ministry').on('mouseover', function(e){
-	// 	shadeChart('#container-2');
-	// 	shadeChart('#container-3');
-	// 	shadeChart('#container-4');
-	// });
-	// $('#ministry').on('mouseout', function(e){
-	// 	unshadeChart('#container-2');
-	// 	unshadeChart('#container-3');
-	// 	unshadeChart('#container-4');
-	// });
-	// $('#category').on('mouseover', function(e){
-	// 	shadeChart('#container-1');
-	// 	shadeChart('#container-4');
-	// });
-	// $('#category').on('mouseout', function(e){
-	// 	unshadeChart('#container-1');
-	// 	unshadeChart('#container-4');
-	// });
-	// $('#unit').on('mouseover', function(e){
-	// 	shadeChart('#container-1');
-	// 	shadeChart('#container-2');
-	// 	shadeChart('#container-3');
-	// 	shadeChart('#container-4');
-	// });
-	// $('#unit').on('mouseout', function(e){
-	// 	unshadeChart('#container-1');
-	// 	unshadeChart('#container-2');
-	// 	unshadeChart('#container-3');
-	// 	unshadeChart('#container-4');
-	// });
-	// $('#temporal').on('mouseover', function(e){
-	// 	shadeChart('#container-3');
-	// 	shadeChart('#container-4');
-	// });
-	// $('#temporal').on('mouseout', function(e){
-	// 	unshadeChart('#container-3');
-	// 	unshadeChart('#container-4');
-	// });
-	// $('#period').on('mouseover', function(e){
-	// 	shadeChart('#container-3');
-	// });
-	// $('#period').on('mouseout', function(e){
-	// 	unshadeChart('#container-3');
-	// });
 });
 
 
 
 /* to do
-change years and quarters to dynamically built
-use colorByPoint to color line chart columns in a pattern (to show quarters better)
 add error message for no-javascript or if the data won't load
 */
 

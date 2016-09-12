@@ -51,6 +51,10 @@ danger: sunset
 	}
 }
 
+.logo:hover {
+	opacity: 0.8;
+}
+
 /* headline */
 .headline {
 	background-color: #666;
@@ -74,6 +78,11 @@ danger: sunset
 .headline span#headline-per {
 	color: #EEB91C;
 	font-size: 1.3em;
+}
+
+.headline p {
+	text-align: center;
+	color: #ddd;
 }
 
 /* period dropdown */
@@ -116,7 +125,7 @@ danger: sunset
 /* footer */
 footer[role="contentinfo"] {
 	padding: 15px 0 0 0;
-	font-size: 12px;
+	font-size: 13px;
 	border-top: 1px solid #ddd;
 	}
 footer[role="contentinfo"] nav ul li {
