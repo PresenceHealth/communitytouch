@@ -1,0 +1,7 @@
+### Presence Health Community Benefit
+
+Community benefit is an example of how Catholic health systems like Presence Health live out their mission to care for the most vulnerable in their communities. Community benefit includes programs that improve access to health care services, enhance the health of the community, advance medical or health knowledge, or relieve the burden of government. As a Catholic health system, Presence Health adheres to the Catholic Health Association&rsquo;s standards for planning, delivering, and reporting our community benefit efforts. Under the Affordable Care Act, the Internal Revenue Service (adopting the CHA guidelines) requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities. Programs do not count as community benefit if they are primarily undertaken for marketing purposes or are unrelated to the mission of the organization. Most community benefit programs are provided to the community at large and not restricted to patients.
+
+This tool is intended for internal planning purposes only and may not contain the most updated numbers. To view Presence Health's annual community benefit reports, visit the [Community Reports](http://presencehealth.org/community-reports/) on our website.
+
+Built using [Highcharts](http://www.highcharts.com/), [Papa Parse](http://papaparse.com/), and other open source libraries.
