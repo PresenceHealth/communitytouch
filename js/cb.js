@@ -273,8 +273,9 @@ function loadData(ministry, r){
 		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
 		'Language Assistance Services', 'Volunteer Services'];
 						} else if (category == 'Total Community Benefit (IRS)'){
-							pieces = ['Total Means-Tested', 'Proactive Community Benefit',
-							'Health Professions Education', 'Research'];
+							pieces = ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
+		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
+		'Community Health'];
 						} else if (category == 'Total Community Benefit (AG)'){
 							pieces = ['Total Means-Tested', 'Health Professions Education',
 							'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall',
@@ -328,9 +329,9 @@ function loadData(ministry, r){
 // triggers when the last data has been loaded
 var loadFinished = function(){
 	// fill out the category select
-	// $('#category option').remove();
+	// $('#category-select option').remove();
 	// for (category in d[m]){
-	// 	$('#category').append('<option value="' + category + '">' + category + '</option>');
+	// 	$('#category-select').append('<option value="' + category + '">' + category + '</option>');
 	// }
 	// load years
 	years.forEach(function(year){
@@ -1211,20 +1212,20 @@ $(document).ready(function(){
 
 	/******************* category change */
 	// list group items
-	$('#category .list-group').on('click', 'a', function(e){
+	$('#category-select .list-group').on('click', 'a', function(e){
 		e.preventDefault();
 		changeCategory($(this).data('name'));
-		$('#category .list-group a').removeClass('active');
+		$('#category-select .list-group a').removeClass('active');
 		$(this).addClass('active');
 	});
 	// drop-down select
-	$('#category select').on('change', function(e){
+	$('#category-select select').on('change', function(e){
 		if (this.value !== 'Other Categories...'){
-			$('#category .list-group a').removeClass('active');
+			$('#category-select .list-group a').removeClass('active');
 			changeCategory(this.value);
 		} else {
 			// reset
-			$('#category .list-group a').eq(0).trigger('click');
+			$('#category-select .list-group a').eq(0).trigger('click');
 		}
 	});
 
