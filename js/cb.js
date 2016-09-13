@@ -284,7 +284,10 @@ function loadData(ministry, r){
 						}
 						pieces.forEach(function(piece){
 							try {
-								agg += d[ministry][piece][unit][type].slice(-1)[0];
+								// per 2015 IRS rules, can zero out negative components
+								if (category !== 'Total Community Benefit (IRS)' || d[ministry][piece][unit][type].slice(-1)[0] > 0){
+									agg += d[ministry][piece][unit][type].slice(-1)[0];
+								}
 							} catch(err){
 								// pass
 							}
@@ -661,7 +664,8 @@ var loadAreaChart = function(){
 			y.push({
 				name: category,
 				data: Array.prototype.slice.call(d[m][category][unit][t]).reverse(),
-				index: index
+				index: index, 
+				visible: !(ac === 'Total Community Benefit (IRS)' && m !== 'System' && d[m][category][unit][t][0] < 0)
 			});
 		}
 		if (m !== 'System'){
@@ -1104,7 +1108,11 @@ var loadHeadline = function(){
 		headline = ministries_abbr[m] + ', ' + c;
 	}
 	$('.headline h3').html(headline);
-	$('.headline p').html(categories_definitions[c]);
+	if (m !== 'System' && c === 'Total Community Benefit (IRS)'){
+		$('.headline p').html(categories_definitions[c] + '<br><p class="small pull-right">* May include negative components treated as $0 per IRS guidelines.</p>');
+	} else {
+		$('.headline p').html(categories_definitions[c]);
+	}
 }
 
 function numberWithCommas(x) {
