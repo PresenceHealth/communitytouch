@@ -1,7 +1,6 @@
 # Setup
-enforce_ssl:      presencehealth.github.io/communitybenefit
 title:            'Presence Health Community Benefit'
-url:              https://presencehealth.github.io/communitybenefit
+url:              http://presencehealth.github.io/communitybenefit
 author:
   name:           'Jonathan Giuffrida'
 
@@ -9,4 +8,4 @@ author:
 version:          0.1
 
 github:
-  repo:           https://github.com/presencehealth/communitybenefit
+  repo:           http://github.com/presencehealth/communitybenefit
