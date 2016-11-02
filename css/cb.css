@@ -150,3 +150,12 @@ footer[role="contentinfo"] nav ul li:last-child {
     white-space:pre-wrap;
     max-width: 350px;
 }
+
+.headline .alert {
+	background-color: darkslategray;
+}
+
+.headline .alert button {
+	color: #fff;
+	opacity: 0.9;
+}
