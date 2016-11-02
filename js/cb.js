@@ -6,6 +6,10 @@ var m = 'System',
 		start = 0,
 		earlier = false;
 
+// Try to avoid CORS issues
+// See http://stackoverflow.com/questions/32897921/why-does-this-cors-request-to-a-google-drive-sheet-fail-in-firefox-works-in-c
+window.googleDocCallback = function () { return true; };
+
 // if user requests, show future data
 if ("future" in QueryString && QueryString.future == "true"){
 	var start = 0;
@@ -133,29 +137,43 @@ var groupings = {
 d = {};
 var completed = 0;
 function loadMinistry(ministry){
-	var newUrl = 'https://raw.githubusercontent.com/presencehealth/communitybenefit/master/data/PH Community Benefit - ' + ministry + '.csv';
-	var url = 'http://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=' + ministries[ministry];
-	var oldUrl = 'https://docs.google.com/spreadsheets/d/1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo/pub?gid=' + ministries[ministry] + '&single=true&output=csv';
-	// IE has trouble with the default urls
-	if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){
-		var urlToUse = oldUrl;
-	} else {
-		var urlToUse = url;
-	}
-	Papa.parse(urlToUse,{
-		download: true,
-		header: true,
-		dynamicTyping: true,
-		complete: function(results) {
-			loadData(ministry, results.data);
-			completed += 1;
-			$('#progress-bar .progress-bar').css('width', String(completed/16*100)+'%')
-				.attr('aria-valuenow', completed);
-			if (completed == 16){ // number of ministries
-				loadFinished();
+	var url = 'https://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=' + ministries[ministry] + '&callback=googleDocCallback';
+	var oldUrl = 'https://docs.google.com/spreadsheets/d/1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo/pub?gid=' + ministries[ministry] + '&single=true&output=csv&callback=googleDocCallback';
+	var urlToUse = url;
+	try {
+		Papa.parse(urlToUse, {
+			download: true,
+			header: true,
+			dynamicTyping: true,
+			complete: function(results) {
+				loadData(ministry, results.data);
+				completed += 1;
+				$('#progress-bar .progress-bar').css('width', String(completed/16*100)+'%')
+					.attr('aria-valuenow', completed);
+				if (completed == 16){ // number of ministries
+					loadFinished();
+				}
 			}
-		}
-	});
+		});
+	} catch(err) {
+		// Something went wrong
+		console.log('Original url did not work');
+		urlToUse = oldUrl;
+		Papa.parse(urlToUse, {
+			download: true,
+			header: true,
+			dynamicTyping: true,
+			complete: function(results) {
+				loadData(ministry, results.data);
+				completed += 1;
+				$('#progress-bar .progress-bar').css('width', String(completed/16*100)+'%')
+					.attr('aria-valuenow', completed);
+				if (completed == 16){ // number of ministries
+					loadFinished();
+				}
+			}
+		});
+	}
 }
 
 // initiate
