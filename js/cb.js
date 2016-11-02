@@ -1115,9 +1115,9 @@ var loadHeadline = function(){
 	}
 	$('.headline h3').html(headline);
 	if (m !== 'System' && c === 'Total Community Benefit (IRS)'){
-		$('.headline p').html(categories_definitions[c] + '<br><p class="small pull-right">* May include negative components treated as $0 per IRS guidelines.</p>');
+		$('.headline>p').html(categories_definitions[c] + '<br><p class="small pull-right">* May include negative components treated as $0 per IRS guidelines.</p>');
 	} else {
-		$('.headline p').html(categories_definitions[c]);
+		$('.headline>p').html(categories_definitions[c]);
 	}
 }
 
