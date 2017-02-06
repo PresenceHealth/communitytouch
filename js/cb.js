@@ -27,10 +27,10 @@ if ("earlier" in QueryString && QueryString.earlier == "true"){
 
 // global selections: initial values are defaults
 // var m = 'System'; // ministry
-var c = 'Total Community Benefit (IRS)'; // category
+var c = 'Overall Community Benefit'; // category
 var u = 'Amount'; // unit
 var t = 'Yearly'; // temporal
-var ac = 'Total Community Benefit (IRS)';  // area chart category
+var ac = 'Overall Community Benefit';  // area chart category
 var p = (start == 0 ? '2015' : '2015'); // period
 
 var ministries = {
@@ -72,11 +72,13 @@ var ministries_abbr = {
 };
  
 var categories_abbr = {
+	'Overall Community Benefit': 'total community benefit (IRS definition)',
 	'Total Community Benefit (IRS)': 'total community benefit (IRS definition)',
 	'Total Community Benefit (AG)': 'total community benefit (IL AG definition)',
 	'Total Means-Tested': 'means-tested community benefit',
 	'Proactive Community Benefit': 'proactive community benefit',
 	'Community Health': 'community health programs',
+	'Community Transformation': 'community transformation', 
 	'Charity Care': 'financial assistance',
 	'Unreimbursed Medicaid': 'unreimbursed Medicaid services',
 	'Community Health Improvement': 'community health improvement services',
@@ -93,11 +95,13 @@ var categories_abbr = {
 };
 
 var categories_definitions = {
+	'Overall Community Benefit': 'Under the Affordable Care Act, the Internal Revenue Service requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities. Below is a broad overview of community benefit provided by Presence Health. Click on other categories to the left to see more details.',
 	'Total Community Benefit (IRS)': 'Under the Affordable Care Act, the Internal Revenue Service requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities.',
 	'Total Community Benefit (AG)': 'The Illinois Attorney General requires all non-profit hospitals to report community benefit annually. Their classification differs somewhat from the IRS&rsquo;s classification and includes Medicare shortfall and bad debts.',
 	'Total Means-Tested': 'Includes financial assistance and Medicaid shortfall, which are provided only to patients below certain income levels.',
 	'Proactive Community Benefit': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
-	'Community Health': '',
+	'Community Health': 'Community health programs are provided to patients in poverty and to the broader community, and focus on proactively improving community health through services like educational sessions, health screenings, enrollment assistance, and care coordination programs.',
+	'Community Transformation': 'Services provided to the broader community that proactively address the root causes of health outcomes and invest in building and supporting healthy communities.',
 	'Charity Care': 'Free or discounted health services provided to persons who cannot afford to pay all or portions of their medical bills and who meet the criteria specified in Presence Health\'s Financial Assistance Policy. Reported in terms of actual costs, not charges.',
 	'Unreimbursed Medicaid': 'The difference between net patient revenue and total expenses (cost of care) for Medicaid patients.',
 	'Community Health Improvement': 'Activities to improve community health such as educational sessions, health screenings, enrollment assistance, and care coordination programs offered community residents.',
@@ -117,6 +121,8 @@ var categories_definitions = {
 }
 
 var groupings = {
+	'Community Health': ['Community Building Activities', 
+		'Community Health Improvement', 'Community Benefit Operations'],
 	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
 		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
 		'Community Health'],
@@ -129,19 +135,24 @@ var groupings = {
 		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
 		'Language Assistance Services', 'Volunteer Services'],
 	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'],
-	'Community Health': ['Community Building Activities', 'Community Health Improvement',
-		'Community Benefit Operations']
+	'Community Transformation': ['Health Professions Education',
+		'Subsidized Health Services', 'Research', 'Cash/In-Kind Contributions', 
+		'Community Health'],
+	'Overall Community Benefit': ['Charity Care', 'Unreimbursed Medicaid', 'Community Transformation'],
 };
 
 // download the data
 d = {};
 var completed = 0;
 function loadMinistry(ministry){
+	var githubUrl = 'http://presencehealth.github.io/communitybenefit/data/PH Community Benefit - ' + ministry + '.csv';
+	var lastUpdated = 'October 30, 2016';
+	$('p#last-updated').text('Data last updated ' + lastUpdated);
 	var url = 'https://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=' + ministries[ministry] + '&callback=googleDocCallback';
 	var oldUrl = 'https://docs.google.com/spreadsheets/d/1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo/pub?gid=' + ministries[ministry] + '&single=true&output=csv&callback=googleDocCallback';
-	var urlToUse = url;
+	var urlToUse = githubUrl;
 	try {
-		Papa.parse(urlToUse, {
+		Papa.parse(githubUrl, {
 			download: true,
 			header: true,
 			dynamicTyping: true,
@@ -155,11 +166,8 @@ function loadMinistry(ministry){
 				}
 			}
 		});
-	} catch(err) {
-		// Something went wrong
-		console.log('Original url did not work');
-		urlToUse = oldUrl;
-		Papa.parse(urlToUse, {
+	} catch (err){
+		Papa.parse(url, {
 			download: true,
 			header: true,
 			dynamicTyping: true,
@@ -267,9 +275,7 @@ function loadData(ministry, r){
 			  }
 			} // end loop over keys
 			// add aggregated data
-			['Community Health', 'Total Means-Tested', 'Proactive Community Benefit',
-				'Total Community Benefit (IRS)',
-				'Total Community Benefit (AG)'].forEach(function(category){
+			Object.keys(groupings).forEach(function(category){
 				key = category;
 				// checks
 				if (!(d[ministry].hasOwnProperty(category))){
@@ -287,25 +293,7 @@ function loadData(ministry, r){
 						// add the data
 						var pieces;
 						var agg = 0;
-						if (category == 'Community Health'){
-							pieces = ['Community Building Activities', 'Community Health Improvement',
-								'Community Benefit Operations'];
-						}	else if (category == 'Total Means-Tested'){
-							pieces = ['Charity Care', 'Unreimbursed Medicaid'];
-						} else if (category == 'Proactive Community Benefit'){
-							pieces = ['Community Health Improvement', 'Community Building Activities', 
-		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
-		'Language Assistance Services', 'Volunteer Services'];
-						} else if (category == 'Total Community Benefit (IRS)'){
-							pieces = ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
-		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
-		'Community Health'];
-						} else if (category == 'Total Community Benefit (AG)'){
-							pieces = ['Total Means-Tested', 'Health Professions Education',
-							'Research', 'Cash/In-Kind Contributions', 'Medicare Shortfall',
-							'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
-							'Subsidized Health Services (AG)', 'Other Community Benefits'];
-						}
+						pieces = groupings[category]
 						pieces.forEach(function(piece){
 							try {
 								// per 2015 IRS rules, can zero out negative components
