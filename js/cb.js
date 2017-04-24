@@ -172,7 +172,7 @@ var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
 d = {};
 var completed = 0;
 function loadHospital(hospital){
-	var githubUrl = '/data/PH Community Benefit - ' + hospital + '.csv';  // TD remove the "PH Community Benefit - " part later - so that the data file name is just: hospital + '.csv'
+	var githubUrl = '/communitybenefit/data/PH Community Benefit - ' + hospital + '.csv';  // TD remove the "PH Community Benefit - " part later - so that the data file name is just: hospital + '.csv'
 	var lastUpdated = 'October 30, 2016';  // TD Move to a global variable that the user sets under "Customizations"
 	$('p#last-updated').text('Data last updated ' + lastUpdated);
 	Papa.parse(githubUrl, {
