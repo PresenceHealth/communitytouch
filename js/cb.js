@@ -1,58 +1,58 @@
+
 /******************************************
 ***************** 	INITIALIZATIONS AND PREP
 *********************************************/
 
-var m = 'System', 
-		start = 0,
-		earlier = false;
+/* NOTES ABOUT DATA FILES 
+- Filling out metadata: you'll notice that the columns provided in the data files determine a lot.
+  Column names need to take the format "XXXXXXXXXX - YYYYYYYY" where XXXXXXXXXX is the name of the category,
+  and YYYYYYYYYYY is the units (such as Amount, Billings, or Persons served). You need to use this format
+  even if you're only providing one column for the category. % of revenue is calculated automatically for each
+  category. Non-community benefit categories (included in the NonCB grouping below) do not need to specify units.
+- All data files need to have the same categories and the same rows, and the rows need to be in the same order. Just 
+  provide rows or columns full of null values if you need to, but make sure you provide them. The columns do not need 
+  to be in any order--even columns for the same category--except that "Period" needs to be the first column.
+*/
 
-// Try to avoid CORS issues
-// See http://stackoverflow.com/questions/32897921/why-does-this-cors-request-to-a-google-drive-sheet-fail-in-firefox-works-in-c
-window.googleDocCallback = function () { return true; };
 
-// if user requests, show future data
-if ("future" in QueryString && QueryString.future == "true"){
-	var start = 0;
-}
 
-// and show specific ministry
-if ("ministry" in QueryString && ['PCMC', 'PHFMC', 'PMMC', 'POLRMC', 'PRMC', 'PSJHC', 'PSJHE', 'PSJMC', 'PSMEMC', 'PSMH', 'PUSMC', 'PMG', 'PLC', 'PH Corp'].indexOf(QueryString.ministry) !== -1){
-	m = QueryString.ministry;
-	console.log(m);
-}
 
+/********************************
+****** START METADATA
+*******************************/
+
+// Users: Edit the information in this section to customize for your hospital or health system.
+// Be careful to only edit this section, and do so with the help of the IT or web team who is
+// helping you set up this site.
+
+
+// global selections: initial values are defaults
+var m = 'System'; // Default hospital, region, or system to show on page load
+var c = 'Overall Community Benefit'; // Default category to show: TD replace this with just the first category
+var u = 'Amount'; // Default units to use
+var t = 'Yearly'; // Default temporal selection: Yearly or Quarterly
+var ac = 'Overall Community Benefit';  // Area chart uses different variable, so specify here the default category to show if it's a grouping
+var p = '2015'; // Default time period (could be the latest, or any other one)
+
+// Customizations
+// Often data before a certain time period is of poor quality. Here, you can indicate 
+// whether or not to show data before a certain time period, which may be of poor quality.
+// The user can request this in the URL by adding ?earlier=true
+// Checking a checkbox in the left sidebar reloads the page with earlier=true
+var earlier = false;  
 if ("earlier" in QueryString && QueryString.earlier == "true"){
 	earlier = true;
 }
 
-// global selections: initial values are defaults
-// var m = 'System'; // ministry
-var c = 'Overall Community Benefit'; // category
-var u = 'Amount'; // unit
-var t = 'Yearly'; // temporal
-var ac = 'Overall Community Benefit';  // area chart category
-var p = (start == 0 ? '2015' : '2015'); // period
+// User can show a certain hospital on page load by adding "?hospital=XXXX" to the URL, e.g. "?hospital=PCMC"
+if ("hospital" in QueryString && ['PCMC', 'PHFMC', 'PMMC', 'POLRMC', 'PRMC', 'PSJHC', 'PSJHE', 'PSJMC', 'PSMEMC', 'PSMH', 'PUSMC', 'PMG', 'PLC', 'PH Corp'].indexOf(QueryString.hospital) !== -1){
+	m = QueryString.hospital;
+	console.log(m);
+}
 
-var ministries = {
-	'PCMC': '0',
-	'PHFMC': '1146625451',
-	'PMMC': '2083066923',
-	'POLRMC': '577443528',
-	'PRMC': '774042577',
-	'PSFH': '1263218171',
-	'PSJHC': '1760255408',
-	'PSJHE': '1806753725',
-	'PSJMC': '632576455',
-	'PSMEMC': '150505737',
-	'PSMH': '1478920126',
-	'PUSMC': '1778576036',
-	'PMG': '1414730250',
-	'PLC': '181672671',
-	'PH Corp': '910888973',
-	'System': '1496614118'
-};
-
-var ministries_abbr = {
+// List of hospital abbreviations and names.
+// The abbreviations MUST match the names of your data files, e.g. "PCMC.csv". 
+var hospitals = {
 	'PCMC': 'Presence Covenant Medical Center',
 	'PHFMC': 'Presence Holy Family Medical Center',
 	'PMMC': 'Presence Mercy Medical Center',
@@ -70,7 +70,33 @@ var ministries_abbr = {
 	'PH Corp': 'Presence Health Corporate',
 	'System': 'Presence Health'
 };
- 
+
+// Here, give the category groupings you want to use.
+// You can keep these default ones, or add your own. 
+// "NonCB" should contain any categories which are not community benefit. This grouping is not shown to the user.
+var groupings = {
+	'Community Health': ['Community Building Activities', 
+		'Community Health Improvement', 'Community Benefit Operations'],
+	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
+		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
+		'Community Health'],
+	'Total Community Benefit (AG)': ['Charity Care', 'Unreimbursed Medicaid', 
+		'Health Professions Education',	'Research', 'Cash/In-Kind Contributions', 
+		'Medicare Shortfall', 'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
+		'Subsidized Health Services (AG)', 'Other Community Benefits'],
+	'Total Means-Tested': ['Charity Care', 'Unreimbursed Medicaid'],
+	'Proactive Community Benefit': ['Community Health Improvement', 'Community Building Activities', 
+		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
+		'Language Assistance Services', 'Volunteer Services'],
+	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'],
+	'Community Transformation': ['Health Professions Education',
+		'Subsidized Health Services', 'Research', 'Cash/In-Kind Contributions', 
+		'Community Health'],
+	'Overall Community Benefit': ['Charity Care', 'Unreimbursed Medicaid', 'Community Transformation'],
+};
+
+// Provide a plain-English way of referring to each category or grouping.
+// This is shown in the headline, as so: "In [2015], [Presence Health] provided [$206,346,459] in total community benefit (IRS definition), helping [379,524] people in our communities.""
 var categories_abbr = {
 	'Overall Community Benefit': 'total community benefit (IRS definition)',
 	'Total Community Benefit (IRS)': 'total community benefit (IRS definition)',
@@ -94,6 +120,8 @@ var categories_abbr = {
 	'Volunteer Services': 'volunteer programs',
 };
 
+// User-friendly explanations of the community benefit categories to show the user under the headline. Feel free to 
+// change these as you wish. 
 var categories_definitions = {
 	'Overall Community Benefit': 'Under the Affordable Care Act, the Internal Revenue Service requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities. Below is a broad overview of community benefit provided by Presence Health. Click on other categories to the left to see more details.',
 	'Total Community Benefit (IRS)': 'Under the Affordable Care Act, the Internal Revenue Service requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities.',
@@ -115,79 +143,58 @@ var categories_definitions = {
 	'Bad Debt': 'Unpaid patient balances that are written off as uncollectable. Reported in terms of charges, not costs.',
 	'Language Assistance Services': 'Interpretation and translation services for patients and community residents.',
 	'Volunteer Services': 'Programs that mobilize volunteers, including both community members and Presence Health associates on their own time.',
-	'Cost-to-Charge Ratio': 'A rough measure of how efficiently services are being provided, the cost-to-charge ratio is used in calculating several kinds of community benefit. A lower cost-to-charge ratio indicates more efficient operations and tends to reduce the total community benefit. The cost-to-charge ratio does not indicate anything about the financial strength of a ministry, and should not be used to make comparisons between ministries.',
+	'Cost-to-Charge Ratio': 'A rough measure of how efficiently services are being provided, the cost-to-charge ratio is used in calculating several kinds of community benefit. A lower cost-to-charge ratio indicates more efficient operations and tends to reduce the total community benefit. The cost-to-charge ratio does not indicate anything about the financial strength of a hospital, and should not be used to make comparisons between hospitals.',
 	'Total Operating Expenses': '',
 	'Net Patient Revenue': '',
 }
 
-var groupings = {
-	'Community Health': ['Community Building Activities', 
-		'Community Health Improvement', 'Community Benefit Operations'],
-	'Total Community Benefit (IRS)': ['Charity Care', 'Unreimbursed Medicaid', 'Health Professions Education',
-		'Subsidized Health Services',	'Research', 'Cash/In-Kind Contributions',
-		'Community Health'],
-	'Total Community Benefit (AG)': ['Charity Care', 'Unreimbursed Medicaid', 
-		'Health Professions Education',	'Research', 'Cash/In-Kind Contributions', 
-		'Medicare Shortfall', 'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
-		'Subsidized Health Services (AG)', 'Other Community Benefits'],
-	'Total Means-Tested': ['Charity Care', 'Unreimbursed Medicaid'],
-	'Proactive Community Benefit': ['Community Health Improvement', 'Community Building Activities', 
-		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research', 
-		'Language Assistance Services', 'Volunteer Services'],
-	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'],
-	'Community Transformation': ['Health Professions Education',
-		'Subsidized Health Services', 'Research', 'Cash/In-Kind Contributions', 
-		'Community Health'],
-	'Overall Community Benefit': ['Charity Care', 'Unreimbursed Medicaid', 'Community Transformation'],
-};
+
+// Change this to use your own color scheme if you want. Colors will be used in order from first to last, and then loop around again.
+var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
+	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A', '#666666'];
+
+
+
+
+
+
+/********************************
+****** END METADATA
+*******************************/
+
+
+/************************************************
+// YOU SHOULD NOT NEED TO EDIT PAST THIS LINE
+************************************************/
+
 
 // download the data
 d = {};
 var completed = 0;
-function loadMinistry(ministry){
-	var githubUrl = 'http://presencehealth.github.io/communitybenefit/data/PH Community Benefit - ' + ministry + '.csv';
-	var lastUpdated = 'October 30, 2016';
+function loadHospital(hospital){
+	var githubUrl = '/data/PH Community Benefit - ' + hospital + '.csv';  // TD remove the "PH Community Benefit - " part later - so that the data file name is just: hospital + '.csv'
+	var lastUpdated = 'October 30, 2016';  // TD Move to a global variable that the user sets under "Customizations"
 	$('p#last-updated').text('Data last updated ' + lastUpdated);
-	var url = 'https://spreadsheets.google.com/tq?key=1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo&tqx=out:csv&gid=' + ministries[ministry] + '&callback=googleDocCallback';
-	var oldUrl = 'https://docs.google.com/spreadsheets/d/1q0jJl6uaB7FcrV28iRuGqk1aXwjsOFBHB0dQr8WZsVo/pub?gid=' + ministries[ministry] + '&single=true&output=csv&callback=googleDocCallback';
-	var urlToUse = githubUrl;
-	try {
-		Papa.parse(githubUrl, {
-			download: true,
-			header: true,
-			dynamicTyping: true,
-			complete: function(results) {
-				loadData(ministry, results.data);
-				completed += 1;
-				$('#progress-bar .progress-bar').css('width', String(completed/16*100)+'%')
-					.attr('aria-valuenow', completed);
-				if (completed == 16){ // number of ministries
-					loadFinished();
-				}
+	Papa.parse(githubUrl, {
+		download: true,
+		header: true,
+		dynamicTyping: true,
+		complete: function(results) {
+			loadData(hospital, results.data);
+			completed += 1;
+			$('#progress-bar .progress-bar').css('width', String(completed/16*100)+'%')
+				.attr('aria-valuenow', completed);
+			if (completed == 16){ // number of hospitals
+				loadFinished();
 			}
-		});
-	} catch (err){
-		Papa.parse(url, {
-			download: true,
-			header: true,
-			dynamicTyping: true,
-			complete: function(results) {
-				loadData(ministry, results.data);
-				completed += 1;
-				$('#progress-bar .progress-bar').css('width', String(completed/16*100)+'%')
-					.attr('aria-valuenow', completed);
-				if (completed == 16){ // number of ministries
-					loadFinished();
-				}
-			}
-		});
-	}
+		}
+	});
 }
 
 // initiate
 $('#period').append('<option value="' + p + '">' + p + '</option>');
-for (var mi in ministries){
-	loadMinistry(mi);
+for (var ho in hospitals){
+	loadHospital(ho);
 }
 
 var years = [];
@@ -195,17 +202,28 @@ var quarters = [];
 var temporalFilled = false;
 
 // function to load the data
-function loadData(ministry, r){
-	// m is ministry
+function loadData(hospital, r){
+	// m is hospital
 	// r is the data (Papa.parse(...).data)
-	// here we should load years and quarters using the data itself
-	d[ministry] = {};
-	// for each row
+	// we load load years and quarters using the data itself
+
+	// This builds a single data object, `d`, with keys for all the hospitals (one key per data file)
+	// Each hospital then has all the categories within it, each category has a number of units (like "Amount" and "% of Revenue")
+	// and each unit is further divided into Quarterly and Yearly arrays
+	// For instance, here's data that could be stored at d['PCMC']['Charity Care']: 
+	// {"Amount":{"Quarterly":[428653,409922,436555,1865097,422875,314644,375843,546138,545986,684678,1635042,1303390,1607239,986383,871333,1093575,722640,826600,1151498],"Yearly":[3049974,3186784,4761467,3794313]},"Billings":{"Quarterly":[2334709,2665290,2297656,9142634,2072918,1542374,1842367,2895192,2797662,3351371,7449175,5832456,7496787,4190150,4389325,5514317,3327871,3531964,5086789],"Yearly":[14948440,16493399,21908718,17461173]},"Persons served":{"Quarterly":[null,null,null,2266,433,632,682,487,308,274,256,675,450,465,280,540,355,359,463],"Yearly":[3766,1325,1870,1717]},"% of revenue":{"Quarterly":[null,null,null,5.3,1.29,0.95,1.07,1.61,1.67,2.01,5.18,3.69,5.08,2.91,2.75,2.36,1.96,2.61,3.47],"Yearly":[2.24,2.41,3.59,2.56]}}
+	// Note that null values must be included, because all years and all quarters have to be represented in the proper order
+	// TD If you have a better idea for building this data object, please by all means try it
+	d[hospital] = {};
 	var type, unit, category, value; // vars for the loop
 	var fillInTemporal = !(temporalFilled);
 	temporalFilled = true;
-	var earliest = earlier ? 2008 : 2012;
-	for (i=start; i<r.length; i++){
+	var earliest = earlier ? 2008 : 2012;  // TD Move under "Customizations": Let user say before what year the data was poor quality (in this case, before 2012, and the data goes back to 2008)
+	// TD We need to refactor this for loop to make it simpler and more efficient.
+	// for each row
+	for (i=0; i<r.length; i++){
+		// For the first hospital to go through this function, use the "Period" column to build lists of the years and quarters
+		// (This is why all data files need to have all the same rows in the same order)
 		if (r[i]['Period'] !== "" && Number(String(r[i]['Period']).substr(0,4)) >= earliest){
 			// if Period is a quarter, set type to quarterly, else yearly
 			type = (String(r[i]['Period']).indexOf('-') === -1 ? 'Yearly' : 'Quarterly');
@@ -217,7 +235,7 @@ function loadData(ministry, r){
 					quarters.push(String(r[i]['Period']));
 				}
 			}
-			// iterate through keys and assign values to d object
+			// iterate through keys and assign values to d (data) object
 			for (var key in r[i]) {
 			  if (r[i].hasOwnProperty(key)) {
 			    // filter the keys
@@ -226,69 +244,70 @@ function loadData(ministry, r){
 			    	value = null;
 			    }
 			    if (key === 'Period'){
-			    	// pass
-			    } else if (groupings['NonCB'].indexOf(key) !== -1){
+			    	// pass: we already did this
+			    } else if (groupings['NonCB'].indexOf(key) !== -1){  // NonCB is a group of categories that are not part of
+			    	// community benefit, like hospital revenue and the cost-to-charge ratio
 			    	// check that key exists
-				    if (!(d[ministry].hasOwnProperty(key))){
+				    if (!(d[hospital].hasOwnProperty(key))){
 				  		// initiate the object
-				  		d[ministry][key] = {};
+				  		d[hospital][key] = {};
 				  	}
 			    	// these are unitless; key = category
 			    	// check that data array exists
-			    	if (!(d[ministry][key].hasOwnProperty(type))){
+			    	if (!(d[hospital][key].hasOwnProperty(type))){
 				  		// initiate the array
-				  		d[ministry][key][type] = [];
+				  		d[hospital][key][type] = [];
 				  	}
 				  	// add the data
-				  	if (key == 'Cost-to-Charge Ratio'){
+				  	if (key == 'Cost-to-Charge Ratio'){  // This is a percentage
 				  		if (value){
-								d[ministry][key][type].push(Math.round(value * 10000)/100);
+								d[hospital][key][type].push(Math.round(value * 10000)/100);
 				  		} else {
 				  			// value is null
-				  			d[ministry][key][type].push(value);
+				  			d[hospital][key][type].push(value);
 				  		}
 				  	} else {
-				  		d[ministry][key][type].push(value);
+				  		d[hospital][key][type].push(value);
 				  	}
 			    } else {
-			    	// all other keys have units
+			    	// all other keys have units defined in the column name
 			    	category = key.substr(0,key.indexOf(' - '));
 			    	unit = key.slice(key.indexOf(' - ') + 3);
 			    	// check that key exists
-			    	if (!(d[ministry].hasOwnProperty(category))){
+			    	if (!(d[hospital].hasOwnProperty(category))){
 				  		// initiate the object
-				  		d[ministry][category] = {};
+				  		d[hospital][category] = {};
 				  	}
 				  	// check that unit exists
-				  	if (!(d[ministry][category].hasOwnProperty(unit))){
+				  	if (!(d[hospital][category].hasOwnProperty(unit))){
 				  		// initiate the object
-				  		d[ministry][category][unit] = {};
+				  		d[hospital][category][unit] = {};
 				  	}
 				  	// check that data array exists
-			    	if (!(d[ministry][category][unit].hasOwnProperty(type))){
+			    	if (!(d[hospital][category][unit].hasOwnProperty(type))){
 				  		// initiate the array
-				  		d[ministry][category][unit][type] = [];
+				  		d[hospital][category][unit][type] = [];
 				  	}
 				  	// add the data
-				  	d[ministry][category][unit][type].push(value);
+				  	d[hospital][category][unit][type].push(value);
 			    }
 			  }
 			} // end loop over keys
-			// add aggregated data
+			// add aggregated data (user-defined groupings)
 			Object.keys(groupings).forEach(function(category){
 				key = category;
 				// checks
-				if (!(d[ministry].hasOwnProperty(category))){
-					d[ministry][category] = {};
+				if (!(d[hospital].hasOwnProperty(category))){
+					d[hospital][category] = {};
 				}
 				['Amount', 'Persons served'].forEach(function(unit){
 					if (unit !== 'Persons served' || category !== 'Total Community Benefit (AG)'){
-						// don't collect persons served for AG data
-						if (!(d[ministry][category].hasOwnProperty(unit))){
-							d[ministry][category][unit] = {};
+						// don't collect persons served for this data
+						if (!(d[hospital][category].hasOwnProperty(unit))){
+							d[hospital][category][unit] = {};
 						}
-						if (!(d[ministry][category][unit].hasOwnProperty(type))){
-							d[ministry][category][unit][type] = [];
+						if (!(d[hospital][category][unit].hasOwnProperty(type))){
+							d[hospital][category][unit][type] = [];
 						}
 						// add the data
 						var pieces;
@@ -296,45 +315,45 @@ function loadData(ministry, r){
 						pieces = groupings[category]
 						pieces.forEach(function(piece){
 							try {
-								// per 2015 IRS rules, can zero out negative components
-								if (category !== 'Total Community Benefit (IRS)' || d[ministry][piece][unit][type].slice(-1)[0] > 0){
-									agg += d[ministry][piece][unit][type].slice(-1)[0];
+								// per 2015 IRS rules, we should zero out negative components
+								if (category !== 'Total Community Benefit (IRS)' || d[hospital][piece][unit][type].slice(-1)[0] > 0){
+									agg += d[hospital][piece][unit][type].slice(-1)[0];
 								}
 							} catch(err){
 								// pass
 							}
 						});
 						if (agg != 0){
-							d[ministry][category][unit][type].push(agg);
+							d[hospital][category][unit][type].push(agg);
 						} else {
-							d[ministry][category][unit][type].push(null);
+							d[hospital][category][unit][type].push(null);
 						}
 					}
 				});
 			});
 			// calculate percent of revenue
-			for (cat in d[ministry]){
-				// ignore technical categories
+			for (cat in d[hospital]){
+				// ignore technical, non-community benefit categories
 				if (groupings['NonCB'].indexOf(cat) === -1){
-					if (!(d[ministry][cat].hasOwnProperty('% of revenue'))){
-			  		d[ministry][cat]['% of revenue'] = {};
+					if (!(d[hospital][cat].hasOwnProperty('% of revenue'))){
+			  		d[hospital][cat]['% of revenue'] = {};
 				  }
 			  	// check that data array exists
-			  	if (!(d[ministry][cat]['% of revenue'].hasOwnProperty(type))){
+			  	if (!(d[hospital][cat]['% of revenue'].hasOwnProperty(type))){
 			  		// initiate the array
-			  		d[ministry][cat]['% of revenue'][type] = [];
+			  		d[hospital][cat]['% of revenue'][type] = [];
 			  	}
 			  	// calculate
-			  	var revenue = d[ministry]['Net Patient Revenue'][type].slice(-1)[0];
+			  	var revenue = d[hospital]['Net Patient Revenue'][type].slice(-1)[0];
 			  	var amount;
 			  	var percent = null;
 			  	if (revenue !== null && revenue !== 0){
-			  		amount = d[ministry][cat]['Amount'][type].slice(-1)[0];
+			  		amount = d[hospital][cat]['Amount'][type].slice(-1)[0];
 			  		if (amount !== null){
 			  			percent = Math.round(amount / revenue * 10000) / 100;
 			  		}
 			  	}
-			  	d[ministry][cat]['% of revenue'][type].push(percent);
+			  	d[hospital][cat]['% of revenue'][type].push(percent);
 				}
 			}
 		}
@@ -364,6 +383,9 @@ var loadFinished = function(){
 ***************** 	MAKING THE CHARTS
 *********************************************/
 
+// The charts are made on demand depending on what the user selects. 
+// loadCharts() determines what charts to load.
+
 // Highcharts global options
 Highcharts.setOptions({
 	lang: {
@@ -372,15 +394,12 @@ Highcharts.setOptions({
 	}
 });
 
-var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
-	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A', '#666666'];
-
 // the charts
 var columnChart, areaChart, treeChart, lineChart;
 
-// creates the column chart
+// Determine which charts to load. The headline is always loaded.
 var loadCharts = function(order){
-	// order refers to what variables are changing (mcutp)
+	// order refers to what variables are changing (mcutp: hospital, category, units, temporal, period)
 	if (order == 'c'){
 		$('#container-1').parent('div').removeClass('col-lg-6');
 		loadColumnChart();
@@ -423,19 +442,22 @@ var loadCharts = function(order){
 	loadHeadline();
 };
 
+// Used by noteMissing()
 var addMissing = function(m, c, n){
 	return {
-		ministry: m,
+		hospital: m,
 		category: c,
 		number: n
 	};
 };
 
+// Count how many missing values there are for this chart
 var noteMissing = function(chart, data, system){
 	if (data.length){
 		var numMissing = 0;
 		var missingLines = [];
 		if (system){
+			// TD This needs to just be built live using `hospitals` instead of hard-coding all of them
 			var mins = {
 				'PCMC': 0,
 				'PHFMC': 0,
@@ -454,7 +476,7 @@ var noteMissing = function(chart, data, system){
 				'PH Corp': 0
 			};
 			data.forEach(function(datum){
-				mins[datum.ministry] += datum.number;
+				mins[datum.hospital] += datum.number;
 				numMissing += datum.number;
 			});
 			for (min in mins){
@@ -462,7 +484,7 @@ var noteMissing = function(chart, data, system){
 					missingLines.push(min + ': ' + mins[min] + ' missing');
 				}
 			}
-			missingLines.push('________________<br>Please look at individual<br>ministries for more details.');
+			missingLines.push('________________<br>Please look at individual<br>hospitals for more details.');
 		} else {
 			data.forEach(function(datum){
 				numMissing += datum.number;
@@ -478,6 +500,7 @@ var noteMissing = function(chart, data, system){
 	}
 };
 
+// Create column chart
 var loadColumnChart = function(){
 	// select the data
 	var x = [];
@@ -489,59 +512,60 @@ var loadColumnChart = function(){
 		})
 	}
 
-	// figure out the proper order
-	var orderedMinistries = [];
+	// figure out the proper order (sort descending based on most recent value)
+	var orderedHospitals = [];
 	function swapElement(array, indexA, indexB) {
 	  var tmp = array[indexA];
 	  array[indexA] = array[indexB];
 	  array[indexB] = tmp;
 	}
 	var o = {};
-	if (groupings['NonCB'].indexOf(c) !== -1){
-		for (mi in ministries){
+	if (groupings['NonCB'].indexOf(c) !== -1){ // For non-community benefit categories
+		for (mi in hospitals){
 			if (d[mi][c]['Yearly'].length &&
 				d[mi][c]['Yearly'].reduce(function(a,b){return a+b;}) &&
 				(mi !== 'System' || c == 'Cost-to-Charge Ratio')){
-				orderedMinistries.push({
+				orderedHospitals.push({
 					name: mi,
 					value: d[mi][c]['Yearly'][0]
 				});
 			}
 		}
 	} else {
-		for (mi in ministries){
+		for (mi in hospitals){
 			if (d[mi][c][u]['Yearly'].length &&
 				d[mi][c][u]['Yearly'].reduce(function(a,b){return a+b;}) &&
 				(mi !== 'System' || u == '% of revenue')){
-				orderedMinistries.push({
+				orderedHospitals.push({
 					name: mi,
 					value: d[mi][c][u]['Yearly'][0]
 				});
 			}
 		}
 	}
-	// put ministries in descending order of 2014 amount
+	// Put hospitals in descending order of most recent amount
 	var working = true;
 	while (working){
 		working = false;
-		for (i=0; i<orderedMinistries.length-1; i++){
-			if (orderedMinistries[i]['value'] < orderedMinistries[i+1]['value']){
-				swapElement(orderedMinistries, i, i+1);
+		for (i=0; i<orderedHospitals.length-1; i++){
+			if (orderedHospitals[i]['value'] < orderedHospitals[i+1]['value']){
+				swapElement(orderedHospitals, i, i+1);
 				working = true;
 			}
 		}
 	}
 
 	// add the data
+	// Note: the column chart always shows yearly data. Quarterly data varies too much and is often missing
 	if (groupings['NonCB'].indexOf(c) !== -1){
-		for (j=0; j<orderedMinistries.length; j++){
-			mi = orderedMinistries[j]['name'];
+		for (j=0; j<orderedHospitals.length; j++){
+			mi = orderedHospitals[j]['name'];
 			if (d[mi][c]['Yearly'].length &&
 				d[mi][c]['Yearly'].reduce(function(a,b){return a+b;}) &&
 				(mi !== 'System' || c == 'Cost-to-Charge Ratio')){
 				x.push(mi);
 				// add the data
-				// make System columns stand out
+				// make System column stand out by coloring it gray
 				if (mi == 'System'){
 					for (i=0; i<=2; i++){
 						var b = d[mi][c]['Yearly'][2-i];
@@ -556,8 +580,8 @@ var loadColumnChart = function(){
 			}
 		}
 	} else {
-		for (j=0; j<orderedMinistries.length; j++){
-			mi = orderedMinistries[i=j]['name'];
+		for (j=0; j<orderedHospitals.length; j++){
+			mi = orderedHospitals[i=j]['name'];
 			if (d[mi][c][u]['Yearly'].length &&
 				d[mi][c][u]['Yearly'].reduce(function(a,b){return a+b;}) &&
 				(mi !== 'System' || u == '% of revenue')){
@@ -583,7 +607,7 @@ var loadColumnChart = function(){
 	y[1]['visible'] = false;
 
 	// get the y axis title
-
+	// TD there must be an easier way to set this
 	if (u == '% of revenue'){
 		var y_title = '% of revenue';
 		var tooltip = '<tr style="font-size:14px;"><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -613,10 +637,10 @@ var loadColumnChart = function(){
     },
     colors: [colors[1], colors[3], colors[4]],
     title: {
-      text: 'All Ministries, Annual'
+      text: 'All Hospitals, Annual'
     },
     subtitle: {
-      text: 'Click a bar to view that ministry, or click on previous years to see more bars. This is for reference only: ministries are different and not meant to be compared to each other.'
+      text: 'Click a bar to view that hospital, or click on previous years to see more bars. This is for reference only: hospitals are different and not meant to be compared to each other.'
     },
     xAxis: {
       categories: x,
@@ -646,7 +670,7 @@ var loadColumnChart = function(){
       		events: {
       			click: function(){
       				m = this.category;
-      				$('#ministrySelect').val(m).trigger('change');
+      				$('#hospitalSelect').val(m).trigger('change');
       			}
       		}
       	}
@@ -660,6 +684,7 @@ var loadColumnChart = function(){
   });
 }
 
+// Build an area chart (only for a grouping of categories)
 var loadAreaChart = function(){
 	$('#container-2').parent('div').fadeIn();
 	// select the data
@@ -691,8 +716,8 @@ var loadAreaChart = function(){
 				missingData.push(addMissing(m, category, numMissing));
 			}
 		} else {
-			// need to check each ministry
-			for (var mi in ministries){
+			// need to check each hospital
+			for (var mi in hospitals){
 				var numMissing = 0;
 				d[mi][category][unit][t].forEach(function(datum){
 					if (datum === null){
@@ -820,6 +845,7 @@ var loadAreaChart = function(){
 	noteMissing('#container-2', missingData, (m == 'System'));
 }
 
+// Build a tree chart (only for a grouping of categories)
 var loadTreeChart = function(){
 	$('#container-3').parent('div').fadeIn();
 	// select the data
@@ -887,6 +913,7 @@ var loadTreeChart = function(){
   });
 }
 
+// Build a line chart (only for an individual category - not a grouping)
 var loadLineChart = function(){
 	$('#container-4').parent('div').fadeIn();
 	// select the data
@@ -981,11 +1008,11 @@ var loadLineChart = function(){
     },
     xAxis: {
       categories: x,
-      // make it clear system-wide quarterly data is not to be trusted (yet)
+      // make it clear "earlier" data is not to be trusted by shading the background gray
       plotBands: (t == 'Quarterly' && m == 'System' && earlier ? [{
       	color: '#ddd',
       	from:  0,
-      	to: 15.5
+      	to: 15.5   // 15.5 is hard-coded here - should be "number of time periods before "earlier", minus 0.5
       }] : null),
       crosshair: true,
       minRange: 2
@@ -1085,6 +1112,7 @@ var loadLineChart = function(){
 	}
 }
 
+// Build the headline to explain what the user is looking at
 var loadHeadline = function(){
 	var headline = '';
 	if (t == 'Yearly'){
@@ -1104,7 +1132,7 @@ var loadHeadline = function(){
 		} else {
 			headline += p;
 		}
-		headline += ', <span id="headline-min">' + ministries_abbr[m] + '</span> ';
+		headline += ', <span id="headline-min">' + hospitals[m] + '</span> ';
 		headline += ' provided <span id="headline-num">$' + value + '</span> in <span id="headline-cat">' +
 			categories_abbr[c] + '</span>';
 		if (d[m][c]['Persons served'] !== undefined &&
@@ -1117,7 +1145,7 @@ var loadHeadline = function(){
 		}
 	} else {
 		// no value for headline
-		headline = ministries_abbr[m] + ', ' + c;
+		headline = hospitals[m] + ', ' + c;
 	}
 	$('.headline h3').html(headline);
 	if (m !== 'System' && c === 'Total Community Benefit (IRS)'){
@@ -1127,6 +1155,7 @@ var loadHeadline = function(){
 	}
 }
 
+// Format number with commas (thousands and millions separator)
 function numberWithCommas(x) {
 	  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
@@ -1143,11 +1172,12 @@ $(document).ready(function(){
 		$('#earlier-data').prop('checked', true);
 	}
 
-	$('#ministrySelect').val(m);
+	$('#hospitalSelect').val(m);
 
 	$('#earlier-data').on('change', function(e){
 		var checked = $(this).prop('checked');
 		var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+		// TD Is there a safer way to modify the URL like this?
 		if (checked){
 			window.location = url + '?earlier=true';
 		} else {
@@ -1155,6 +1185,7 @@ $(document).ready(function(){
 		}
 	});
 
+	// When user changes the category shown, everything changes
 	function changeCategory(cat){
 		c = cat;
 		// change units
@@ -1269,8 +1300,8 @@ $(document).ready(function(){
 		loadCharts('u');
 	});
 
-	/******************* ministry change */
-	$('#ministry #ministrySelect').on('change', function(e){
+	/******************* hospital change */
+	$('#hospital #hospitalSelect').on('change', function(e){
 		m = this.value;
 		loadCharts('m');
 	});
@@ -1307,15 +1338,4 @@ $(document).ready(function(){
 
 /* to do
 add error message for no-javascript or if the data won't load
-*/
-
-/* the following changes the area chart to percent
-
-for(var i =0; i < areaChart.series.length; i++){
-        areaChart.series[i].update({
-            stacking: 'normal'
-        }, false);
-    }
-areaChart.redraw();
-
 */

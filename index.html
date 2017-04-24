@@ -46,7 +46,7 @@
 			    </div>
 			    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 			      <div class="panel-body">
-			        <p>You can use this visualization tool to learn more about the community benefit that Presence Health ministries provide to our communities every day. To look at individual ministries, select one from the <b>Ministry</b> drop-down. Select different categories of community benefit under <b>Category</b>. Change between dollars, persons served, and percent of revenue under <b>Units</b>. You can switch between <b>Yearly</b> and <b>Quarterly</b> numbers. Data before 2012 is less complete, but you can view it by selecting the appropriate checkbox. You can save a picture of a chart by clicking on the button in the top-right of the chart.</p>
+			        <p>You can use this visualization tool to learn more about the community benefit that Presence Health hospitals provide to our communities every day. To look at individual hospitals, select one from the <b>Hospital</b> drop-down. Select different categories of community benefit under <b>Category</b>. Change between dollars, persons served, and percent of revenue under <b>Units</b>. You can switch between <b>Yearly</b> and <b>Quarterly</b> numbers. Data before 2012 is less complete, but you can view it by selecting the appropriate checkbox. You can save a picture of a chart by clicking on the button in the top-right of the chart.</p>
 			        <p>Data may be incomplete and should be used with caution. See notes below the graphs to identify what data points are missing. Because of how yearly community benefit is calculated, it may not be the exact sum of the quarterly numbers. Some categories tend to be reported primarily at the end of the year, so the quarterly numbers are not always meaningful.</p>
 			      </div>
 			    </div>
@@ -54,9 +54,10 @@
 			</div><!-- panel-group -->
 
 			<form>
-				<div class="form-group" id="ministry">
-					<label for="ministrySelect">Ministry</label>
-					<select class="form-control" id="ministrySelect">
+				<div class="form-group" id="hospital">
+					<!-- This section needs to be changed to build programmatically from JavaScript -->
+					<label for="hospitalSelect">Hospital</label>
+					<select class="form-control" id="hospitalSelect">
 						<optgroup>
 							<option value="System" selected>Presence Health</option>
 						</optgroup>
@@ -77,8 +78,9 @@
 							<option value="PH Corp">Presence Health Corporate</option>
 						</optgroup>
 					</select>
-				</div><!-- ministry -->
+				</div><!-- hospital -->
 				<div class="form-group" id="category-select">
+					<!-- This section needs to be changed to build programmatically from JavaScript -->
 					<label>Category</label>
 					<div class="list-group">
 					  <a href="#" class="list-group-item active" data-name="Overall Community Benefit">Overview</a>
@@ -196,6 +198,7 @@
 			</div>
 			<footer role="contentinfo">
 				<nav role="navigation">
+					<!-- Update this footer to include your own links, disclaimers, and other information -->
 					<ul>
 						<li><a href="http://www.presencehealth.org/">Presence Health</a></li>
 						<li><a href="http://www.presencehealth.org/community-reports">Community Health</a></li>
@@ -214,6 +217,7 @@
 <script src="js/jquery-1.11.3.min.js"></script>
 <script>
 	// Check for internet explorer
+	// This site currently works fine in IE, but may not always - we show this message just in case something breaks
 	var ua = window.navigator.userAgent;
 	var msie = ua.indexOf("MSIE ");
 	if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){  // If Internet Explorer, return version number
