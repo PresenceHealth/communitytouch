@@ -25,20 +25,8 @@ var options = {
 // The abbreviations MUST match the names of your data files, e.g. "PCMC.csv". 
 var hospitals = {
 	'PCMC': 'Presence Covenant Medical Center',
-	'PHFMC': 'Presence Holy Family Medical Center',
-	'PMMC': 'Presence Mercy Medical Center',
-	'PRMC': 'Presence Resurrection Medical Center',
-	'PSFH': 'Presence Saint Francis Hospital',
-	'PSJHC': 'Presence Saint Joseph Hospital - Chicago',
-	'PSJHE': 'Presence Saint Joseph Hospital - Elgin',
-	'PSJMC': 'Presence Saint Joseph Medical Center',
-	'PSMEMC': 'Presence Saints Mary and Elizabeth Medical Center',
-	'PSMH': 'Presence St. Mary&rsquo;s Hospital',
 	'PUSMC': 'Presence United Samaritans Medical Center',
-	'PMG': 'Presence Medical Group',
-	'PLC': 'Presence Life Connections',
-	'PH Corp': 'Presence Health Corporate',
-	'System': 'Presence Health'
+	'System': 'Presence Health',
 };
 
 var allHospitals = Object.keys(hospitals);
