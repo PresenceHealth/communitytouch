@@ -39,7 +39,8 @@ If you are having trouble implementing Community Touch yourself and do not know 
 * Request the support of your hospital’s web development team.
 
 ### Team
-[Jonathan Giuffrida](https://lucaluca.github.io)
-[Will Snyder](https://twitter.com/williamsnyder)
+
+* [Jonathan Giuffrida](https://lucaluca.github.io)
+* [Will Snyder](https://twitter.com/williamsnyder)
 
 Built using [Highcharts](http://www.highcharts.com/), [Papa Parse](http://papaparse.com/), and other open source libraries.

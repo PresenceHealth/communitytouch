@@ -223,7 +223,7 @@ var cb = {
 			 *  Use Papa to parse CSV,
 			 *  Update progress bar for each hospital loaded. 
 			 **/
-			var githubUrl = '/data/' + hospital + '.csv';
+			var githubUrl = window.location.pathname + 'data/' + hospital + '.csv';
 
 			Papa.parse(githubUrl, {
 				download: true,
