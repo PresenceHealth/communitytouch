@@ -40,6 +40,15 @@ danger: sunset
 	background-color: #87D2DA;
 }
 
+#options-bar h2,
+#options-bar h3 {
+	text-align: center;
+}
+
+#options-bar h2 {
+	margin-bottom: -20px;
+}
+
 /* resize charts for large screens */
 #container-2, #container-4 {
 	height: 400px;

@@ -474,7 +474,7 @@ var cb = {
 								$('#unit .amount-dropdown button').addClass('active');
 							}
 						}
-						else if (c == 'Financial Assistance') {
+						else if (c == 'Financial Assistance' || c == 'Bad Debt') {
 							// switch to amount dropdown
 							$('#unit .amount-unit').hide();
 							$('#unit .amount-dropdown').show().find('li').each(function(index) {
@@ -730,12 +730,6 @@ HighchartHolder = {
 					},
 					xAxis: {
 						categories: x,
-						// make it clear "earlier" data is not to be trusted by shading the background gray
-						plotBands: (t == 'Quarterly' && m == 'System' && options.earlier ? [{
-							color: '#ddd',
-							from: 0,
-							to: 15.5 // 15.5 is hard-coded here - should be "number of time periods before "earlier", minus 0.5
-						}] : null),
 						crosshair: true,
 						minRange: 2
 					},
