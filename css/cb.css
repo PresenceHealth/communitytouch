@@ -141,6 +141,10 @@ footer[role="contentinfo"] nav ul li:last-child {
 	border: none;
 	}
 
+nav ul {
+	text-align: center;
+}
+
 /* bootstrap fixes */
 .btn {
 	padding: 6px;
