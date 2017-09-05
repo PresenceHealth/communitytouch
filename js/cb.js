@@ -17,7 +17,7 @@ var p = '2016'; // Default time period (could be the latest, or any other one)
 
 var options = {
 	systemName: 'Presence Health',
-	lastUpdated: 'May 8, 2017',
+	lastUpdated: 'September 5, 2017',
 	earlier: false,
 }; 
 
