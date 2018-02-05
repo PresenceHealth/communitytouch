@@ -9,15 +9,15 @@
 // global selections: initial values are defaults
 /*global QueryString*/
 var m = 'System'; // Default hospital, region, or system to show on page load
-var c = 'Overall Community Benefit'; // Default category to show: TD replace this with just the first category
+var c = 'Overall Community Benefit'; // Default category to show: TODO replace this with just the first category
 var u = 'Amount'; // Default units to use
 var t = 'Yearly'; // Default temporal selection: Yearly or Quarterly
 var ac = 'Overall Community Benefit'; // Area chart uses different variable, so specify here the default category to show if it's a grouping
-var p = '2016'; // Default time period (could be the latest, or any other one)
+var p = '2017'; // Default time period (could be the latest, or any other one)
 
 var options = {
 	systemName: 'Presence Health',
-	lastUpdated: 'October 27, 2017',
+	lastUpdated: 'February 5, 2018',
 	earlier: false,
 }; 
 
@@ -33,7 +33,7 @@ var hospitals = {
 	'PSJHE': 'Presence Saint Joseph Hospital - Elgin',
 	'PSJMC': 'Presence Saint Joseph Medical Center',
 	'PSMEMC': 'Presence Saints Mary and Elizabeth Medical Center',
-	'PSMH': 'Presence St. Mary&rsquo;s Hospital',
+	'PSMH': 'Presence St. Mary\'s Hospital',
 	'PUSMC': 'Presence United Samaritans Medical Center',
 	'PMG': 'Presence Medical Group',
 	'PLC': 'Presence Life Connections',
@@ -55,7 +55,6 @@ if ("earlier" in QueryString && QueryString.earlier == "true") {
 // User can show a certain hospital on page load by adding "?hospital=XXXX" to the URL, e.g. "?hospital=PCMC"
 if ("hospital" in QueryString && allHospitals.indexOf(QueryString.hospital) !== -1) {
 	m = QueryString.hospital;
-	console.log(m);
 }
 
 // Here, give the category groupings you want to use.
@@ -74,12 +73,14 @@ var groupings = {
 		'Medicare Shortfall', 'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
 		'Subsidized Health Services (AG)', 'Other Community Benefits'
 	],
-	'Total Means-Tested': ['Financial Assistance', 'Unreimbursed Medicaid'],
+	'Total Means-Tested': ['Financial Assistance', 'Unreimbursed Medicaid'
+	],
 	'Proactive Community Benefit': ['Community Health Improvement', 'Community Building Activities',
 		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research',
 		'Language Assistance Services', 'Volunteer Services'
 	],
-	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'],
+	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'
+	],
 	'Community Transformation': ['Health Professions Education',
 		'Subsidized Health Services', 'Research', 'Cash/In-Kind Contributions',
 		'Community Health'
@@ -125,7 +126,7 @@ var categories_definitions = {
 	'Community Health': 'Community health programs are provided to patients in poverty and to the broader community, and focus on proactively improving community health through services like educational sessions, health screenings, enrollment assistance, and care coordination programs.',
 	'Community Transformation': 'Services provided to the broader community that proactively address the root causes of health outcomes and invest in building and supporting healthy communities.',
 	'Financial Assistance': 'Free or discounted health services provided to persons who cannot afford to pay all or portions of their medical bills and who meet the criteria specified in Presence Health\'s Financial Assistance Policy. Reported in terms of actual costs, not charges.',
-	'Unreimbursed Medicaid': 'The difference between net patient revenue and total expenses (cost of care) for Medicaid patients.',
+	'Unreimbursed Medicaid': 'The difference between net patient revenue and total expenses (cost of care) for Medicaid patients. Positive numbers indicate a net loss.',
 	'Community Health Improvement': 'Activities to improve community health such as educational sessions, health screenings, enrollment assistance, and care coordination programs offered community residents.',
 	'Health Professions Education': 'Costs incurred helping prepare future health care professionals such as residents, nursing students, or other health professionals.',
 	'Subsidized Health Services': 'Clinical service lines provided despite a financial loss because they meet an essential community need, such as a trauma center or behavioral health program.',
@@ -133,7 +134,7 @@ var categories_definitions = {
 	'Cash/In-Kind Contributions': 'Cash or services donated to individuals or the community at large. In-kind donations include donations of food, equipment, space, or supplies.',
 	'Community Building Activities': 'Programs that address root causes of health problems, such as poverty, homelessness, and environmental hazards, as well as advocacy undertaken on behalf of the underserved and underprivileged.',
 	'Community Benefit Operations': 'Costs associated with dedicated community benefit staff and community health needs and assets assessments.',
-	'Medicare Shortfall': 'The difference between net patient revenue and total expenses (cost of care) for Medicare patients.',
+	'Medicare Shortfall': 'The difference between net patient revenue and total expenses (cost of care) for Medicare patients. Positive numbers indicate a net loss.',
 	'Bad Debt': 'Unpaid patient balances that are written off as uncollectable. Reported in terms of costs, not charges.',
 	'Language Assistance Services': 'Interpretation and translation services for patients and community residents.',
 	'Volunteer Services': 'Programs that mobilize volunteers, including both community members and Presence Health associates on their own time.',
@@ -141,6 +142,14 @@ var categories_definitions = {
 	'Total Operating Expenses': '',
 	'Net Patient Revenue': '',
 }
+
+var units_definitions = {
+	'Amount': 'Net community benefit',
+	'Billings': 'Total charges',
+	'Persons served': 'Community residents assisted',
+	'% of revenue': 'Percent of net patient service revenue',
+	'Net patient care': 'Net community benefit before taxes and special payments',
+};
 
 
 // Change this to use your own color scheme if you want. Colors will be used in order from first to last, and then loop around again.
@@ -406,7 +415,7 @@ var cb = {
 								try{
 									amount = cb.scope.d[hospital][cat]['Amount'][type].slice(-1)[0];
 								} catch(err){
-									console.log(cb.scope.d[hospital]);
+									// console.log(cb.scope.d[hospital]);
 								}
 								if (amount !== null) {
 									percent = Math.round(amount / revenue * 10000) / 100;
@@ -458,6 +467,7 @@ var cb = {
 						$('#unit .amount-dropdown button').attr('disabled', 'disabled').removeClass('active');
 						$('#unit .btn-default').removeClass('active').addClass('disabled');
 						u = 'Amount';
+						$('.units-definition').text('');
 						HighchartHolder.functions.loadCharts('c');
 					}
 					else {
@@ -469,7 +479,7 @@ var cb = {
 							$('#unit .amount-unit').hide();
 							$('#unit .amount-dropdown').show().find('li').show();
 							// if unit was in the dropdown, keep it highlighted
-							if (u == 'Amount' || u == 'Amount at cost' || u == 'Billings') {
+							if (u == 'Amount' || u == 'Net patient care' || u == 'Billings') {
 								$('#unit .dropdown-name').text(u);
 								$('#unit .amount-dropdown button').addClass('active');
 							}
@@ -478,7 +488,7 @@ var cb = {
 							// switch to amount dropdown
 							$('#unit .amount-unit').hide();
 							$('#unit .amount-dropdown').show().find('li').each(function(index) {
-								if ($(this).find('a').data('name') == 'Amount at cost') {
+								if ($(this).find('a').data('name') == 'Net patient care') {
 									$(this).hide();
 								}
 								else {
@@ -490,10 +500,11 @@ var cb = {
 								$('#unit .dropdown-name').text(u);
 								$('#unit .amount-dropdown button').addClass('active');
 							}
-							else if (u == 'Amount at cost') {
+							else if (u == 'Net patient care') {
+								u = 'Amount';
 								$('#unit .dropdown-name').text(u);
 								$('#unit .amount-dropdown button').addClass('active');
-								u = 'Amount';
+								$('.units-definition').text(units_definitions[u]);
 							}
 						}
 						else {
@@ -501,9 +512,10 @@ var cb = {
 							$('#unit .amount-unit').show();
 							$('#unit .amount-dropdown').hide().find('.dropdown-name').text('Amount');
 							// if unit was in the dropdown, highlight Amount
-							if (u == 'Amount' || u == 'Amount at cost' || u == 'Billings') {
+							if (u == 'Amount' || u == 'Net patient care' || u == 'Billings') {
 								$('#unit .amount-unit').addClass('active');
 								u = 'Amount';
+								$('.units-definition').text(units_definitions[u]);
 							}
 							// hide person served if necessary
 							if (['Medicare Shortfall', 'Bad Debt', 'Language Assistance Services',
@@ -512,6 +524,7 @@ var cb = {
 								$('#unit .persons-unit').addClass('disabled');
 								if (u == 'Persons served') {
 									u = 'Amount';
+									$('.units-definition').text(units_definitions[u]);
 									$('#unit .amount-unit').addClass('active');
 								}
 							}
@@ -556,6 +569,7 @@ var cb = {
 					e.preventDefault();
 					$('#unit a.btn').removeClass('active');
 					u = $(this).data('name');
+					$('.units-definition').text(units_definitions[u]);
 					$('#unit .dropdown-name').text($(this).data('name'));
 					$('#unit .amount-dropdown button').addClass('active');
 					HighchartHolder.functions.loadCharts('u');
@@ -567,6 +581,7 @@ var cb = {
 					$('#unit a.btn').removeClass('active');
 					$(this).addClass('active');
 					u = $(this).data('name');
+					$('.units-definition').text(units_definitions[u]);
 					HighchartHolder.functions.loadCharts('u');
 				});
 
@@ -702,7 +717,7 @@ HighchartHolder = {
 						amountTooltip = percentTooltip;
 					}
 					else {
-						// billings, amount at cost, etc.
+						// billings, other amounts
 						amountVariable = u;
 						amountTitle = amountVariable + ' ($)';
 						amountName = amountVariable;
@@ -804,18 +819,18 @@ HighchartHolder = {
 					}
 				});
 
-				// if medicaid amount or amount at cost, show the other unit too
-				if (c == 'Unreimbursed Medicaid' && (u == 'Amount' || u == 'Amount at cost')) {
-					amountVariable = (u == 'Amount' ? 'Amount at cost' : 'Amount');
-					if (cb.scope.d[m][c][amountVariable][t].length &&
-						cb.scope.d[m][c][amountVariable][t].reduce(function(a, b) {
+				// if medicaid amount, show the other units too
+				if (c == 'Unreimbursed Medicaid' && u == 'Amount') {
+					var secondAmountVariable = 'Net patient care';
+					if (cb.scope.d[m][c][secondAmountVariable][t].length &&
+						cb.scope.d[m][c][secondAmountVariable][t].reduce(function(a, b) {
 							return a + b;
-						})) {
-						var secondAmount = Array.prototype.slice.call(cb.scope.d[m][c][amountVariable][t]).reverse();
+						})){
+						var secondAmount = Array.prototype.slice.call(cb.scope.d[m][c][secondAmountVariable][t]).reverse();
 						lineChart.addSeries({
 							type: 'column',
 							data: secondAmount,
-							name: amountVariable,
+							name: secondAmountVariable,
 							tooltip: {
 								pointFormat: amountTooltip
 							},
@@ -825,7 +840,7 @@ HighchartHolder = {
 							pointPadding: 0.05,
 							groupPadding: 0.1
 						});
-					};
+					}
 				}
 			},
 			loadTreeChart: function() {
@@ -839,7 +854,7 @@ HighchartHolder = {
 				else {
 					period = cb.scope.quarters.indexOf(p);
 				}
-				var unit = (['Billings', 'Amount at cost'].indexOf(u) == -1 ? u : 'Amount');
+				var unit = (['Billings', 'Net patient care'].indexOf(u) == -1 ? u : 'Amount');
 				groupings[ac].forEach(function(category) {
 					if (cb.scope.d[m][category][unit][t].length &&
 						cb.scope.d[m][category][unit][t].reduce(function(a, b) {
@@ -901,7 +916,7 @@ HighchartHolder = {
 				var x = Array.prototype.slice.call((t == 'Yearly' ? cb.scope.years : cb.scope.quarters)).reverse();
 				var y = [];
 				var index = 10;
-				var unit = (['Billings', 'Amount at cost'].indexOf(u) == -1 ? u : 'Amount');
+				var unit = (['Billings', 'Net patient care'].indexOf(u) == -1 ? u : 'Amount');
 				var missingData = [];
 
 				// add the data
@@ -1361,8 +1376,9 @@ HighchartHolder = {
 			$('.headline h3').html(headline);
 			if (m !== 'System' && c === 'Total Community Benefit (IRS)') {
 				$('.headline>p').html(categories_definitions[c] + '<br><p class="small pull-right">* May include negative components treated as $0 per IRS guidelines.</p>');
-			}
-			else {
+			} else if (c === 'Unreimbursed Medicaid'){
+				$('.headline>p').html(categories_definitions[c] + '<br><p class="small pull-right">* All Medicaid components are shown in terms of community benefit (positive numbers indicate a net loss).</p>');
+			} else {
 				$('.headline>p').html(categories_definitions[c]);
 			}
 		},

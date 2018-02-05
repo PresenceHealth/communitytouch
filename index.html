@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Community Touch - Presence Health</title>
+
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="css/cb.css">
@@ -51,13 +54,12 @@
 			<form>
 				<div class="form-group" id="hospital">
 					<!-- This section needs to be changed to build programmatically from JavaScript -->
-					<label for="hospitalSelect">Hospital</label>
+					<label for="hospitalSelect">Ministry</label>
 					<select class="form-control" id="hospitalSelect">
 						<optgroup>
 							<option value="System" selected>Presence Health</option>
 						</optgroup>
 						<optgroup label="_______">
-							<option value="PCMC">Presence Covenant Medical Center</option>
 							<option value="PHFMC">Presence Holy Family Medical Center</option>
 							<option value="PMMC">Presence Mercy Medical Center</option>
 							<option value="PRMC">Presence Resurrection Medical Center</option>
@@ -67,10 +69,15 @@
 							<option value="PSJMC">Presence Saint Joseph Medical Center</option>
 							<option value="PSMEMC">Presence Saints Mary and Elizabeth Medical Center</option>
 							<option value="PSMH">Presence St. Mary&nbsp;s Hospital</option>
-							<option value="PUSMC">Presence United Samaritans Medical Center</option>
+						</optgroup>
+						<optgroup label="System Services">
 							<option value="PMG">Presence Medical Group</option>
 							<option value="PLC">Presence Life Connections</option>
 							<option value="PH Corp">Presence Health Corporate</option>
+						</optgroup>
+						<optgroup label="Transferred to OSF">
+							<option value="PCMC">Presence Covenant Medical Center</option>
+							<option value="PUSMC">Presence United Samaritans Medical Center</option>
 						</optgroup>
 					</select>
 				</div><!-- hospital -->
@@ -108,8 +115,6 @@
 							<option value="Volunteer Services">Volunteer Services</option>
 						</optgroup>
 						<optgroup label="Technical">
-							<option value="Total Operating Expenses">Total Operating Expenses</option>
-							<option value="Net Patient Revenue">Net Patient Revenue</option>
 							<option value="Cost-to-Charge Ratio">Cost-to-Charge Ratio</option>
 						</optgroup>
 					</select>
@@ -125,7 +130,7 @@
 						    	</button>
 							    <ul class="dropdown-menu">
 							    	<li><a data-name="Amount">Amount</a></li>
-							      <li><a data-name="Amount at cost">Amount at cost</a></li>
+							      <li><a data-name="Net patient care">Net patient care</a></li>
 							      <li><a data-name="Billings">Billings</a></li>
 							    </ul>
 							  </div>
@@ -134,6 +139,7 @@
 							  <a type="button" class="btn btn-default" data-name="% of revenue">% of revenue</a>
 							</div>
 						</div><!-- unit -->
+						<p class="small units-definition">Net community benefit</p>
 					</div>
 					<div class="col-xs-12">
 						<div class="form-group">
