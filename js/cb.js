@@ -17,8 +17,9 @@ var p = '2017'; // Default time period (could be the latest, or any other one)
 
 var options = {
 	systemName: 'Presence Health',
-	lastUpdated: 'February 7, 2018',
+	lastUpdated: 'February 9, 2018',
 	earlier: false,
+	simple: false,
 }; 
 
 // List of hospital abbreviations and names.
@@ -55,6 +56,13 @@ if ("earlier" in QueryString && QueryString.earlier == "true") {
 // User can show a certain hospital on page load by adding "?hospital=XXXX" to the URL, e.g. "?hospital=PCMC"
 if ("hospital" in QueryString && allHospitals.indexOf(QueryString.hospital) !== -1) {
 	m = QueryString.hospital;
+}
+
+// Mode to hide everything except the area and line charts
+if ("simple" in QueryString){
+	options.simple = true;
+	$('#container-3, #container-1').closest('div').hide();
+	$('.period-dropdown').hide();
 }
 
 // Here, give the category groupings you want to use.
@@ -187,6 +195,7 @@ var cb = {
 	functions: {
 		initialize: function() {
 			cb.events.document_ready();
+			HighchartHolder.events.document_ready();
 			HighchartHolder.functions.initialize();
 
 			$('#period').append('<option value="' + p + '">' + p + '</option>');
@@ -638,7 +647,25 @@ HighchartHolder = {
 		lineChart: {}
 	},
 	events: {
-
+		document_ready: function(){
+			$(document).ready(function(){
+				// Hide all series in area chart
+				$('.hide-all').on('click', function(){
+					if ($(this).hasClass('all-hidden')){
+						$(this).removeClass('all-hidden').text('Hide all');
+						$(HighchartHolder.scope.areaChart.series).each(function(){
+							this.setVisible(true, false);
+						});
+						HighchartHolder.scope.areaChart.redraw();
+					} else {
+						$(this).addClass('all-hidden').text('Show all');
+						$(HighchartHolder.scope.areaChart.series).each(function(){
+							this.setVisible(false, false);
+						});
+					}
+				});
+			});
+		}
 	},
 	functions: {
 		charts: {
@@ -897,7 +924,12 @@ HighchartHolder = {
 						layoutAlgorithm: 'squarified',
 						colorByPoint: true,
 						colors: colors,
-						data: y
+						data: y,
+						dataLabels: {
+							formatter: function(){
+								return this.point.name + ': $' + (this.point.value / 1000000).toFixed(1) + 'm';
+							}
+						}
 					}],
 					tooltip: {
 						headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
@@ -977,7 +1009,7 @@ HighchartHolder = {
 						'<td style="padding:0"><b>${point.y:,.0f}</b></td></tr>';
 				}
 
-				areaChart = new Highcharts.Chart({
+				HighchartHolder.scope.areaChart = new Highcharts.Chart({
 					chart: {
 						type: 'area',
 						renderTo: 'container-2',
@@ -1071,6 +1103,8 @@ HighchartHolder = {
 						enabled: false
 					}
 				});
+
+				$('.hide-all').show();
 
 				HighchartHolder.functions.noteMissing('#container-2', missingData, (m == 'System'));
 			},
@@ -1332,6 +1366,23 @@ HighchartHolder = {
 				lang: {
 					thousandsSep: ',',
 					noData: 'No data to display'
+				},
+				exporting: {
+					filename: "Community Touch chart",
+					scale: 4,
+					buttons: {
+						contextButton: {
+							text: 'Save',
+							menuItems: [
+								'printChart',
+								'downloadXLS',
+								'separator',
+								'downloadPNG',
+								'downloadJPEG',
+								'downloadPDF',
+							],
+						}
+					}
 				}
 			});
 		},

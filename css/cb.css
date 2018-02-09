@@ -50,7 +50,8 @@ danger: sunset
 }
 
 /* resize charts for large screens */
-#container-2, #container-4 {
+#container-1, #container-2, #container-3, #container-4 {
+	width: 100%;
 	height: 400px;
 }
 
@@ -69,6 +70,7 @@ danger: sunset
 	background-color: #666;
 	min-height: 20px;
 	padding: 0 15% 15px 15%;
+	margin-bottom: 20px;
 }
 .headline h3 {
 	text-align: center;
@@ -100,6 +102,12 @@ danger: sunset
 	top: 35px;
 	right: 24px;
 	z-index: 2;
+}
+
+.hide-all {
+	display: none;
+	position: relative;
+	top: -20px;
 }
 
 /* warning */
