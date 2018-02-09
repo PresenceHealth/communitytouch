@@ -925,11 +925,6 @@ HighchartHolder = {
 						colorByPoint: true,
 						colors: colors,
 						data: y,
-						dataLabels: {
-							formatter: function(){
-								return this.point.name + ': $' + (this.point.value / 1000000).toFixed(1) + 'm';
-							}
-						}
 					}],
 					tooltip: {
 						headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
