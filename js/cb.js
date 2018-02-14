@@ -68,24 +68,26 @@ if ("simple" in QueryString){
 // Here, give the category groupings you want to use.
 // You can keep these default ones, or add your own. 
 // "NonCB" should contain any categories which are not community benefit. This grouping is not shown to the user.
+// Order matters - put categories first if they roll up into other categories
 var groupings = {
 	'Community Health': ['Community Building Activities',
 		'Community Health Improvement', 'Community Benefit Operations'
+	],
+	'Proactive Community Benefit': ['Subsidized Health Services', 'Community Health Improvement', 'Community Building Activities',
+		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research',
+		'Language Assistance Services', 'Volunteer Services'
+	],
+	'Proactive Community Benefit (AG)': ['Subsidized Health Services (AG)', 'Other Community Benefits', 
+		'Cash/In-Kind Contributions', 'Research',	'Language Assistance Services', 'Volunteer Services'
 	],
 	'Total Community Benefit (IRS)': ['Financial Assistance', 'Unreimbursed Medicaid', 'Health Professions Education',
 		'Subsidized Health Services', 'Research', 'Cash/In-Kind Contributions',
 		'Community Health'
 	],
 	'Total Community Benefit (AG)': ['Financial Assistance', 'Unreimbursed Medicaid',
-		'Health Professions Education', 'Research', 'Cash/In-Kind Contributions',
-		'Medicare Shortfall', 'Bad Debt', 'Language Assistance Services', 'Volunteer Services',
-		'Subsidized Health Services (AG)', 'Other Community Benefits'
+		'Health Professions Education', 'Medicare Shortfall', 'Bad Debt', 'Proactive Community Benefit (AG)'
 	],
 	'Total Means-Tested': ['Financial Assistance', 'Unreimbursed Medicaid'
-	],
-	'Proactive Community Benefit': ['Community Health Improvement', 'Community Building Activities',
-		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research',
-		'Language Assistance Services', 'Volunteer Services'
 	],
 	'NonCB': ['Total Operating Expenses', 'Cost-to-Charge Ratio', 'Net Patient Revenue'
 	],
@@ -104,6 +106,7 @@ var categories_abbr = {
 	'Total Community Benefit (AG)': 'total community benefit (Illinois Attorney General definition)',
 	'Total Means-Tested': 'means-tested community benefit',
 	'Proactive Community Benefit': 'proactive community benefit',
+	'Proactive Community Benefit (AG)': 'proactive community benefit (AG)',
 	'Community Health': 'community health programs',
 	'Community Transformation': 'community transformation',
 	'Financial Assistance': 'financial assistance',
@@ -131,6 +134,7 @@ var categories_definitions = {
 	'Total Community Benefit (AG)': 'The Illinois Attorney General requires all non-profit hospitals to report community benefit annually. Their classification differs somewhat from the IRS&rsquo;s classification and includes Medicare shortfall and bad debts.',
 	'Total Means-Tested': 'Includes financial assistance and Medicaid shortfall, which are provided only to patients below certain income levels.',
 	'Proactive Community Benefit': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
+	'Proactive Community Benefit (AG)': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
 	'Community Health': 'Community health programs are provided to patients in poverty and to the broader community, and focus on proactively improving community health through services like educational sessions, health screenings, enrollment assistance, and care coordination programs.',
 	'Community Transformation': 'Services provided to the broader community that proactively address the root causes of health outcomes and invest in building and supporting healthy communities.',
 	'Financial Assistance': 'Free or discounted health services provided to persons who cannot afford to pay all or portions of their medical bills and who meet the criteria specified in Presence Health\'s Financial Assistance Policy. Reported in terms of actual costs, not charges.',
@@ -162,7 +166,7 @@ var units_definitions = {
 
 // Change this to use your own color scheme if you want. Colors will be used in order from first to last, and then loop around again.
 var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
-	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A', '#666666'
+	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A'
 ];
 
 
@@ -274,6 +278,9 @@ var cb = {
 				}
 			});
 			$('#progress-bar').hide();
+			if (!options.simple){
+				$('.period-dropdown').show();
+			}
 			HighchartHolder.functions.loadCharts('ac');
 		},
 		loadData: function(hospital, r) {
@@ -918,7 +925,7 @@ HighchartHolder = {
 						margin: 20
 					},
 					subtitle: {
-						text: 'Relative size is proportional to ' + unit.toLowerCase()
+						text: 'Click each category to learn more'
 					},
 					series: [{
 						type: "treemap",
@@ -926,6 +933,11 @@ HighchartHolder = {
 						colorByPoint: true,
 						colors: colors,
 						data: y,
+						dataLabels: {
+							formatter: function(){
+								return this.point.name + ': $' + (this.point.value / 1000000).toFixed(1) + 'm';
+							}
+						}
 					}],
 					tooltip: {
 						headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
@@ -935,6 +947,24 @@ HighchartHolder = {
 					},
 					credits: {
 						enabled: false
+					},
+					plotOptions: {
+						series: {
+							cursor: 'pointer',
+							point: {
+								events: {
+									click: function() {
+										var chartsToLoad = 'c';
+										c = this.name;
+										if (c in groupings){
+											ac = this.name;
+											chartsToLoad = 'ac';
+										}
+										HighchartHolder.functions.loadCharts(chartsToLoad, true);
+									}
+								}
+							}
+						}
 					}
 				});
 			},
@@ -1091,7 +1121,14 @@ HighchartHolder = {
 										$('#period').val(p).trigger('change');
 									}
 								}
-							}
+							},
+							events: {
+                legendItemClick: function () {
+                    if (!this.visible){
+                    	$('.hide-all').removeClass('all-hidden').text('Hide all');
+                    }
+                }
+            }
 						}
 					},
 					series: y,
@@ -1108,7 +1145,7 @@ HighchartHolder = {
 				// select the data
 				var x = [];
 				var y = [];
-				for (let i = 2; i >= 0; i--) {
+				for (let i = 3; i >= 0; i--) {
 					y.push({
 						name: cb.scope.years[i],
 						data: []
@@ -1178,8 +1215,8 @@ HighchartHolder = {
 							// add the data
 							// make System column stand out by coloring it gray
 							if (mi == 'System') {
-								for (let i = 0; i <= 2; i++) {
-									var b = cb.scope.d[mi][c]['Yearly'][2 - i];
+								for (let i = 0; i <= 3; i++) {
+									var b = cb.scope.d[mi][c]['Yearly'][3 - i];
 									y[i]['data'].push({
 										y: b,
 										color: '#666'
@@ -1187,8 +1224,8 @@ HighchartHolder = {
 								}
 							}
 							else {
-								for (let i = 0; i <= 2; i++) {
-									var b = cb.scope.d[mi][c]['Yearly'][2 - i];
+								for (let i = 0; i <= 3; i++) {
+									var b = cb.scope.d[mi][c]['Yearly'][3 - i];
 									y[i]['data'].push(b);
 								}
 							}
@@ -1207,8 +1244,8 @@ HighchartHolder = {
 							// add the data
 							// make System columns stand out
 							if (mi == 'System') {
-								for (i = 0; i <= 2; i++) {
-									var b = cb.scope.d[mi][c][u]['Yearly'][2 - i];
+								for (i = 0; i <= 3; i++) {
+									var b = cb.scope.d[mi][c][u]['Yearly'][3 - i];
 									y[i]['data'].push({
 										y: b,
 										color: '#666'
@@ -1216,15 +1253,15 @@ HighchartHolder = {
 								}
 							}
 							else {
-								for (let i = 0; i <= 2; i++) {
-									var b = cb.scope.d[mi][c][u]['Yearly'][2 - i];
+								for (let i = 0; i <= 3; i++) {
+									var b = cb.scope.d[mi][c][u]['Yearly'][3 - i];
 									y[i]['data'].push(b);
 								}
 							}
 						}
 					}
 				}
-				// only enable the most recent year
+				// only enable the most recent two years
 				y[0]['visible'] = false;
 				y[1]['visible'] = false;
 
@@ -1256,9 +1293,9 @@ HighchartHolder = {
 						type: 'column',
 						renderTo: 'container-1'
 					},
-					colors: [colors[1], colors[3], colors[4]],
+					colors: [colors[1], colors[5], colors[3], colors[4]],
 					title: {
-						text: 'All Hospitals, Annual'
+						text: c + ' by Hospital',
 					},
 					subtitle: {
 						text: 'Click a bar to view that hospital, or click on previous years to see more bars. This is for reference only: hospitals are different and not meant to be compared to each other.'
@@ -1305,20 +1342,26 @@ HighchartHolder = {
 				});
 			}
 		},
-		loadCharts: function(order) {
+		loadCharts: function(order, lineAreaOnly) {
+			if (typeof lineAreaOnly === 'undefined'){ lineAreaOnly = false; }
+			// lineAreaOnly will change only the line/area charts for categories & leave the others
 			// order refers to what variables are changing (mcutp: hospital, category, units, temporal, period)
 			if (order == 'c') {
-				$('#container-1').parent('div').removeClass('col-lg-6');
+				if (!lineAreaOnly){
+					$('#container-1').parent('div').removeClass('col-lg-6');
+					$('#container-3').parent('div').hide();
+				}
 				HighchartHolder.functions.charts.loadColumnChart();
-				HighchartHolder.functions.charts.loadLineChart();
 				$('#container-2').parent('div').hide();
-				$('#container-3').parent('div').hide();
+				HighchartHolder.functions.charts.loadLineChart();
 			}
 			else if (order == 'ac') {
-				$('#container-1').parent('div').addClass('col-lg-6');
+				if (!lineAreaOnly){
+					$('#container-1').parent('div').addClass('col-lg-6');
+					HighchartHolder.functions.charts.loadTreeChart();
+				}
 				HighchartHolder.functions.charts.loadColumnChart();
 				HighchartHolder.functions.charts.loadAreaChart();
-				HighchartHolder.functions.charts.loadTreeChart();
 				$('#container-4').parent('div').hide();
 			}
 			else if (order == 'm') {
@@ -1377,6 +1420,13 @@ HighchartHolder = {
 								'downloadJPEG',
 								'downloadPDF',
 							],
+						}
+					},
+					chartOptions: {
+						credits: {
+							enabled: true,
+							text: options.systemName + ' Community Benefit data as of ' + options.lastUpdated + 
+								', from https://presencehealth.github.io/communitytouch',
 						}
 					}
 				}

@@ -98,6 +98,7 @@ danger: sunset
 
 /* period dropdown */
 .period-dropdown {
+	display: none;
 	position: absolute;
 	top: 35px;
 	right: 24px;
