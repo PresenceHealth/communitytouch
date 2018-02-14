@@ -685,6 +685,7 @@ HighchartHolder = {
 				// common tooltip styles
 				var percentTooltip = '<span style="color:{point.color}">{series.name}</span>: <b>{point.y}%</b><br/>';
 				var dollarsTooltip = '<span style="color:{point.color}">{series.name}</span>: <b>${point.y:,.0f}</b><br/>';
+				var negativeDollarsTooltip = '<span style="color:{point.color}">{series.name}</span>: <b>$({point.y:,.0f})</b><br/>';
 				personsTooltip = '<span style="color:{point.color}">{series.name}</span>: <b>{point.y:,.0f}</b><br/>';
 				if (groupings['NonCB'].indexOf(c) !== -1) {
 					if (cb.scope.d[m][c][t].length &&
@@ -857,9 +858,9 @@ HighchartHolder = {
 						lineChart.addSeries({
 							type: 'column',
 							data: secondAmount,
-							name: secondAmountVariable,
+							name: secondAmountVariable + ' (loss)',
 							tooltip: {
-								pointFormat: amountTooltip
+								pointFormat: negativeDollarsTooltip
 							},
 							zIndex: 2,
 							index: 1,

@@ -1,9 +1,9 @@
 Period,Total Operating Expenses,Net Patient Revenue,Cost-to-Charge Ratio,Financial Assistance - Amount,Financial Assistance - Billings,Financial Assistance - Persons served,Unreimbursed Medicaid - Amount,Unreimbursed Medicaid - Billings,Unreimbursed Medicaid - Amount at cost,Unreimbursed Medicaid - NPSR,Unreimbursed Medicaid - Net patient care,Unreimbursed Medicaid - Persons served,Community Health Improvement - Amount,Community Health Improvement - Persons served,Health Professions Education - Amount,Health Professions Education - Persons served,Subsidized Health Services - Amount,Subsidized Health Services - Persons served,Research - Amount,Research - Persons served,Cash/In-Kind Contributions - Amount,Cash/In-Kind Contributions - Persons served,Community Building Activities - Amount,Community Building Activities - Persons served,Community Benefit Operations - Amount,Community Benefit Operations - Persons served,Medicare Shortfall - Amount,Bad Debt - Billings,Bad Debt - Amount,Language Assistance Services - Amount,Volunteer Services - Amount,Subsidized Health Services (AG) - Amount,Other Community Benefits - Amount
-2017,,,0.1735,4181,24100,,0,,,,,,,,,,,,,,,,,,,,142087,2650776,460018,10826,0,7236,115162
-2017-Q4,,,,625,3600,,,,,,,,,,,,,,,,,,,,,,35522,358284,62162,2966,0,1474,0
-2017-Q3,,,,538,3100,,,,,,,,,,,,,,,,,,,,,,35522,905007,157019,3126,0,1558,0
-2017-Q2,,,,1527,8800,,,,,,,,,,,,,,,,,,,,,,35522,804537,139587,2328,0,2194,0
-2017-Q1,,,,1492,8600,,,,,,,,,,,,,,,,,,,,,,35522,582948,101141,2406,0,2010,115162
+2017,,,0.1735,4181,24100,,0,,,,,,321760,,0,0,0,,0,,281000,,776168,,640652,,142087,2650776,460018,10826,0,7236,115162
+2017-Q4,,,,625,3600,,,,,,,,80440,,0,0,0,,0,,70250,,194042,,160163,,35522,358284,62162,2966,0,1474,0
+2017-Q3,,,,538,3100,,,,,,,,80440,,0,0,0,,0,,70250,,194042,,160163,,35522,905007,157019,3126,0,1558,0
+2017-Q2,,,,1527,8800,,,,,,,,80440,,0,0,0,,0,,70250,,194042,,160163,,35522,804537,139587,2328,0,2194,0
+2017-Q1,,,,1492,8600,,,,,,,,80440,,0,0,0,,0,,70250,,194042,,160163,,35522,582948,101141,2406,0,2010,115162
 2016,,,0.1792,13301,74292,,0,,,,,,61914,1255,0,0,0,0,0,0,184250,0,546773,0,566571,0,198501,2678092,479479,46014,2434,61914,1113344
 2016-Q4,,,0.1790,2758,15390,,,,,,,,50767,0,0,0,0,0,0,0,113000,0,87690,0,193098,0,49625,1962639,351705,7640,0,50767,280788
 2016-Q3,,,0.1846,4570,25500,,,,,,,,674,230,0,0,0,0,0,0,58000,0,329023,0,105604,0,49625,243088,43561,9742,1774,674,434627
