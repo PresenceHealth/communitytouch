@@ -1427,7 +1427,10 @@ HighchartHolder = {
 							enabled: true,
 							text: options.systemName + ' Community Benefit data as of ' + options.lastUpdated + 
 								', from https://presencehealth.github.io/communitytouch',
-						}
+						},
+						subtitle: {
+							text: ''
+						},
 					}
 				}
 			});
