@@ -59,7 +59,7 @@
 						<optgroup>
 							<option value="System" selected>Presence Health</option>
 						</optgroup>
-						<optgroup label="_______">
+						<optgroup label="Presence Health">
 							<option value="PHFMC">Presence Holy Family Medical Center</option>
 							<option value="PMMC">Presence Mercy Medical Center</option>
 							<option value="PRMC">Presence Resurrection Medical Center</option>
@@ -69,6 +69,15 @@
 							<option value="PSJMC">Presence Saint Joseph Medical Center</option>
 							<option value="PSMEMC">Presence Saints Mary and Elizabeth Medical Center</option>
 							<option value="PSMH">Presence St. Mary&nbsp;s Hospital</option>
+						</optgroup>
+						<optgroup label="AMITA Health">
+							<option value="ABBHH">Alexian Brothers Behavioral Health Hospital</option>
+							<option value="ABMC">Alexian Brothers Medical Center</option>
+							<option value="SAMC">St. Alexius Medical Center</option>
+							<option value="Bolingbrook">Adventist Medical Center - Bolingbrook</option>
+							<option value="GlenOaks">Adventist Medical Center - GlenOaks</option>
+							<option value="Hinsdale">Adventist Medical Center - Hinsdale</option>
+							<option value="LaGrange">Adventist Medical Center - La Grange</option>
 						</optgroup>
 						<optgroup label="System Services">
 							<option value="PMG">Presence Medical Group</option>
@@ -212,6 +221,24 @@
 			</footer>
 		</div>
 	</div><!-- primary row -->
+
+	<div class="modal fade" id="dataWarningModal" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Warning: Data for AMITA Health is incomplete and unverified</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p>When using this tool, please keep in mind that data for the AMITA Health hospitals is incomplete and may be inaccurate until we finish the data import. It is shown only for demonstration purposes.</p>
+	        <p>Data for Presence Health hospitals is complete and accurate from 2012 on.</p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-primary" data-dismiss="modal">Understood!</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 </div><!-- container-fluid -->
 
 <script src="js/querystring.js"></script>
@@ -229,7 +256,7 @@
 	  'with the community benefit data it relies on. If this page does not load, ' + 
 	  '<a href="https://msdn.microsoft.com/en-us/library/ee797612%28v=cs.20%29.aspx" target="_blank">' + 
 	  'follow these instructions from Microsoft</a> to enable the page to work.</p>' + 
-	  '<p>You can also use this site in another browser like ' + 
+	  '<p>You can also use this site in a modern browser like ' + 
 	  '<a href="https://www.google.com/chrome/browser/desktop/index.html" target="_blank">Google Chrome</a> or ' + 
 	  '<a href="https://www.mozilla.org/en-US/firefox/new/?icn=tabz" target="_blank">Firefox</a>. ' + 
 	  '</p></div>');

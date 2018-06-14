@@ -2,6 +2,19 @@
  ****** START METADATA
  *******************************/
 
+/* TODO
+- change logo to AMITA
+- System => "Presence Health System"
+- new "System"
+- change color scheme
+- auto-generate the HTML sidebar from this JS
+- change "hospitals" to a dict of dicts
+- display notice if different tax years are present
+- smoother load if some data files are missing - remove them from select and display warning message
+*/
+
+
+
 // Users: Edit the information in this section to customize for your hospital or health system.
 // Be careful to only edit this section (down to "END METADATA"), unless you know what you're doing.
 
@@ -17,12 +30,12 @@ var p = '2017'; // Default time period (could be the latest, or any other one)
 
 var options = {
 	systemName: 'Presence Health',
-	lastUpdated: 'May 16, 2018',
+	lastUpdated: 'June 14, 2018',
 	earlier: false,
 	simple: false,
 }; 
 
-// List of hospital abbreviations and names.
+// Information about hospitals.
 // The abbreviations MUST match the names of your data files, e.g. "PCMC.csv". 
 var hospitals = {
 	'PCMC': 'Presence Covenant Medical Center',
@@ -39,8 +52,16 @@ var hospitals = {
 	'PMG': 'Presence Medical Group',
 	'PLC': 'Presence Life Connections',
 	'PH Corp': 'Presence Health Corporate',
-	'System': 'Presence Health'
+	'System': 'Presence Health',
+	'ABBHH': 'Alexian Brothers Behavioral Health Hospital',
+	'ABMC': 'Alexian Brothers Medical Center',
+	'SAMC': 'St. Alexius Medical Center',
+	'Bolingbrook': 'Adventist Medical Center - Bolingbrook',
+	'GlenOaks': 'Adventist Medical Center - GlenOaks',
+	'Hinsdale': 'Adventist Medical Center - Hinsdale',
+	'LaGrange': 'Adventist Medical Center - La Grange',
 };
+
 
 var allHospitals = Object.keys(hospitals);
 
@@ -470,6 +491,9 @@ var cb = {
 						window.location = url;
 					}
 				});
+
+				// Show warning about data quality
+				$('#dataWarningModal').modal('show');
 
 				// When user changes the category shown, everything changes
 				function changeCategory(cat) {
@@ -935,8 +959,8 @@ HighchartHolder = {
 						data: y,
 						dataLabels: {
 							formatter: function(){
-								return this.point.name + ': $' + (this.point.value / 1000000).toFixed(1) + 'm';
-							}
+								return this.point.name;
+							},
 						}
 					}],
 					tooltip: {
@@ -963,8 +987,8 @@ HighchartHolder = {
 										HighchartHolder.functions.loadCharts(chartsToLoad, true);
 									}
 								}
-							}
-						}
+							},
+						},
 					}
 				});
 			},
@@ -1424,13 +1448,16 @@ HighchartHolder = {
 					},
 					chartOptions: {
 						credits: {
-							enabled: true,
+							enabled: false,
 							text: options.systemName + ' Community Benefit data as of ' + options.lastUpdated + 
 								', from https://presencehealth.github.io/communitytouch',
 						},
 						subtitle: {
 							text: ''
 						},
+						title: {
+							text: null,
+						}
 					}
 				}
 			});
