@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Community Touch - Presence Health</title>
+	<title>Community Touch - AMITA Health</title>
 
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
@@ -14,7 +14,7 @@
 <div class="container-fluid">
 	<div class="row">
 		<div id="options-bar" class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
-			<a href="http://presencehealth.org"><img src="logo.png" class="logo" height="37" width="222" style="margin-top: 5px;"></a>
+			<a href="https://www.amitahealth.org/"><img src="amita-logo.png" class="logo" height="36" width="222""></a>
 			<h2 class="text-info">Community Touch</h2>
 			<h3><small>Community Benefit at your fingertips</small></h3>
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -28,9 +28,9 @@
 			    </div>
 			    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
 			      <div class="panel-body">
-			        <p>Community benefit is one way that non-profit health systems like <span class="system-name"></span> live out our mission to care for the most vulnerable in our communities. Community benefit includes programs that improve access to health care services, enhance the health of the community, advance medical or health knowledge, or relieve the burden of government. As a Catholic health system, <span class="system-name"></span> adheres to the Catholic Health Association&rsquo;s standards for planning, delivering, and reporting our community benefit efforts.</p>
+			        <p>Community benefit is one way that non-profit health systems like <span class="system-name"></span> live out our mission to care for the most vulnerable in our communities. Community benefit includes programs that improve access to health care services, enhance the health of the community, advance medical or health knowledge, or relieve the burden of government. As a faith-based health system, <span class="system-name"></span> adheres to the Catholic Health Association&rsquo;s standards for planning, delivering, and reporting our community benefit efforts.</p>
 			        <p>Under the Affordable Care Act, the Internal Revenue Service (adopting the CHA guidelines) requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities. Programs do not count as community benefit if they are primarily undertaken for marketing purposes or are unrelated to the mission of the organization. Most community benefit programs are provided to the community at large and not restricted to patients.</p>
-			        <p>Data presented on this tool is accurate as of <span class="last-updated">></span>. To view <span class="system-name"></span>'s annual community benefit reports, visit the <a href="http://presencehealth.org/community-reports/">Community Reports</a> on our website.</p><p>Built by <a href="https://lucaluca.github.io">Jonathan Giuffrida</a> and the Mission and External Affairs Department of <a href="http://presencehealth.org">Presence Health</a>.</p>
+			        <p>Data presented on this tool is accurate as of <span class="last-updated">></span>. To view <span class="system-name"></span>'s annual community benefit reports, visit the <a href="http://presencehealth.org/community-reports/">Community Reports</a> on our website.</p><p>Built by <a href="https://lucaluca.github.io">Jonathan Giuffrida</a> and the Advocacy Department of <a href="http://presencehealth.org">Presence Health</a>.</p>
 			      </div>
 			    </div>
 			  </div>
@@ -53,42 +53,8 @@
 
 			<form>
 				<div class="form-group" id="hospital">
-					<!-- This section needs to be changed to build programmatically from JavaScript -->
 					<label for="hospitalSelect">Ministry</label>
-					<select class="form-control" id="hospitalSelect">
-						<optgroup>
-							<option value="System" selected>Presence Health</option>
-						</optgroup>
-						<optgroup label="Presence Health">
-							<option value="PHFMC">Presence Holy Family Medical Center</option>
-							<option value="PMMC">Presence Mercy Medical Center</option>
-							<option value="PRMC">Presence Resurrection Medical Center</option>
-							<option value="PSFH">Presence Saint Francis Hospital</option>
-							<option value="PSJHC">Presence Saint Joseph Hospital - Chicago</option>
-							<option value="PSJHE">Presence Saint Joseph Hospital - Elgin</option>
-							<option value="PSJMC">Presence Saint Joseph Medical Center</option>
-							<option value="PSMEMC">Presence Saints Mary and Elizabeth Medical Center</option>
-							<option value="PSMH">Presence St. Mary&nbsp;s Hospital</option>
-						</optgroup>
-						<optgroup label="AMITA Health">
-							<option value="ABBHH">Alexian Brothers Behavioral Health Hospital</option>
-							<option value="ABMC">Alexian Brothers Medical Center</option>
-							<option value="SAMC">St. Alexius Medical Center</option>
-							<option value="Bolingbrook">Adventist Medical Center - Bolingbrook</option>
-							<option value="GlenOaks">Adventist Medical Center - GlenOaks</option>
-							<option value="Hinsdale">Adventist Medical Center - Hinsdale</option>
-							<option value="LaGrange">Adventist Medical Center - La Grange</option>
-						</optgroup>
-						<optgroup label="System Services">
-							<option value="PMG">Presence Medical Group</option>
-							<option value="PLC">Presence Life Connections</option>
-							<option value="PH Corp">Presence Health Corporate</option>
-						</optgroup>
-						<optgroup label="Transferred to OSF">
-							<option value="PCMC">Presence Covenant Medical Center</option>
-							<option value="PUSMC">Presence United Samaritans Medical Center</option>
-						</optgroup>
-					</select>
+					<select class="form-control" id="hospitalSelect"></select>
 				</div><!-- hospital -->
 				<div class="form-group" id="category-select">
 					<!-- This section needs to be changed to build programmatically from JavaScript -->
@@ -97,7 +63,7 @@
 					  <a href="#" class="list-group-item active" data-name="Overall Community Benefit">Overview</a>
 					  <a href="#" class="list-group-item" data-name="Total Community Benefit (IRS)">Total Community Benefit (IRS)</a>
 					  <a href="#" class="list-group-item" data-name="Total Community Benefit (AG)">Total Community Benefit (AG)</a>
-					  <a href="#" class="list-group-item" data-name="Proactive Community Benefit">Proactive Community Benefit</a>
+					  <a href="#" class="list-group-item" data-name="Proactive Community Benefit (IRS)">Proactive Community Benefit (IRS)</a>
 					  <a href="#" class="list-group-item" data-name="Financial Assistance">Financial Assistance</a>
 					  <a href="#" class="list-group-item" data-name="Unreimbursed Medicaid">Unreimbursed Medicaid</a>
 					</div>
@@ -164,6 +130,11 @@
 							    Show earlier data (less reliable)
 							  </label>
 							</div>
+
+							<select class="form-control" id="systemSelect">
+								<option value="System" selected>Showing the combined system</option>
+							</select>
+
 							<p style="color: #666; font-style: italic; font-size: 12px;">Last updated on <span class="last-updated"></span></p>
 						</div><!-- temporal -->
 					</div>
@@ -173,6 +144,7 @@
 
 		<div class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
 			<div class="row">
+				<div class="col-xs-12 alert-container"></div>
 				<div class="col-xs-12 headline">
 					<h3></h3>
 					<p></p>
@@ -212,6 +184,7 @@
 				<nav role="navigation">
 					<!-- Update this footer to include your own links, disclaimers, and other information -->
 					<ul>
+						<li><a href="https://www.amitahealth.org/">AMITA Health</a></li>
 						<li><a href="http://www.presencehealth.org/">Presence Health</a></li>
 						<li><a href="http://github.com/presencehealth/communitytouch">View on GitHub</a></li>
 						<li style="font-weight: normal;">Charts made using <a href="http://www.highcharts.com/">Highcharts</a></li>
@@ -231,10 +204,10 @@
 	      </div>
 	      <div class="modal-body">
 	        <p>When using this tool, please keep in mind that data for the AMITA Health hospitals is incomplete and may be inaccurate until we finish the data import. It is shown only for demonstration purposes.</p>
-	        <p>Data for Presence Health hospitals is complete and accurate from 2012 on.</p>
+	        <p>Data for Presence Health hospitals is complete and accurate from 2012 on. You can switch between legacy health systems using the drop-down at the bottom of the options section.</p>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-primary" data-dismiss="modal">Understood!</button>
+	        <button type="button" class="btn btn-primary" data-dismiss="modal">Understood, AMITA data is incomplete!</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

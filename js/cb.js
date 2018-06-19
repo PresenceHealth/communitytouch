@@ -2,89 +2,207 @@
  ****** START METADATA
  *******************************/
 
-/* TODO
-- change logo to AMITA
-- System => "Presence Health System"
-- new "System"
-- change color scheme
-- auto-generate the HTML sidebar from this JS
-- change "hospitals" to a dict of dicts
-- display notice if different tax years are present
-- smoother load if some data files are missing - remove them from select and display warning message
-*/
-
-
-
 // Users: Edit the information in this section to customize for your hospital or health system.
 // Be careful to only edit this section (down to "END METADATA"), unless you know what you're doing.
 
 
 // global selections: initial values are defaults
 /*global QueryString*/
-var m = 'System'; // Default hospital, region, or system to show on page load
-var c = 'Overall Community Benefit'; // Default category to show: TODO replace this with just the first category
-var u = 'Amount'; // Default units to use
-var t = 'Yearly'; // Default temporal selection: Yearly or Quarterly
-var ac = 'Overall Community Benefit'; // Area chart uses different variable, so specify here the default category to show if it's a grouping
-var p = '2017'; // Default time period (could be the latest, or any other one)
+var m, 																// Default hospital, region, or system to show on page load
+	  c = 'Overall Community Benefit',  // Default category to show: TODO replace this with just the first category
+	  ac = 'Overall Community Benefit', // Area chart uses different variable, 
+																			// so specify here the default category to show if it's a grouping
+	  u = 'Amount', 										// Default units to use
+	  t = 'Yearly', 										// Default temporal selection: Yearly or Quarterly
+	  p = '2017', 											// Default time period (could be the latest, or any other one)
+	  systemVar,			 									// The key for the system in use - leave blank for default
+	  hospitals,
+	  allHospitals;
 
+// Defaults
 var options = {
-	systemName: 'Presence Health',
-	lastUpdated: 'June 14, 2018',
-	earlier: false,
-	simple: false,
+	systemName: 'AMITA Health',  				// Name of the full company
+	viewSystem: 'System',  							// Codename of the system to view
+	lastUpdated: 'June 18, 2018',
+	earlier: false,											// If true, will show data before 2012
+	simple: false,											// If true, will hide all charts except the one line/area chart
 }; 
 
 // Information about hospitals.
 // The abbreviations MUST match the names of your data files, e.g. "PCMC.csv". 
-var hospitals = {
-	'PCMC': 'Presence Covenant Medical Center',
-	'PHFMC': 'Presence Holy Family Medical Center',
-	'PMMC': 'Presence Mercy Medical Center',
-	'PRMC': 'Presence Resurrection Medical Center',
-	'PSFH': 'Presence Saint Francis Hospital',
-	'PSJHC': 'Presence Saint Joseph Hospital - Chicago',
-	'PSJHE': 'Presence Saint Joseph Hospital - Elgin',
-	'PSJMC': 'Presence Saint Joseph Medical Center',
-	'PSMEMC': 'Presence Saints Mary and Elizabeth Medical Center',
-	'PSMH': 'Presence St. Mary\'s Hospital',
-	'PUSMC': 'Presence United Samaritans Medical Center',
-	'PMG': 'Presence Medical Group',
-	'PLC': 'Presence Life Connections',
-	'PH Corp': 'Presence Health Corporate',
-	'System': 'Presence Health',
-	'ABBHH': 'Alexian Brothers Behavioral Health Hospital',
-	'ABMC': 'Alexian Brothers Medical Center',
-	'SAMC': 'St. Alexius Medical Center',
-	'Bolingbrook': 'Adventist Medical Center - Bolingbrook',
-	'GlenOaks': 'Adventist Medical Center - GlenOaks',
-	'Hinsdale': 'Adventist Medical Center - Hinsdale',
-	'LaGrange': 'Adventist Medical Center - La Grange',
-};
-
-
-var allHospitals = Object.keys(hospitals);
-
-// Customizations
-// Often data before a certain time period is of poor quality. Here, you can indicate 
-// whether or not to show data before a certain time period, which may be of poor quality.
-// The user can request this in the URL by adding ?earlier=true
-// Checking a checkbox in the left sidebar reloads the page with earlier=true
-if ("earlier" in QueryString && QueryString.earlier == "true") {
-	options.earlier = true;
-}
-
-// User can show a certain hospital on page load by adding "?hospital=XXXX" to the URL, e.g. "?hospital=PCMC"
-if ("hospital" in QueryString && allHospitals.indexOf(QueryString.hospital) !== -1) {
-	m = QueryString.hospital;
-}
-
-// Mode to hide everything except the area and line charts
-if ("simple" in QueryString){
-	options.simple = true;
-	$('#container-3, #container-1').closest('div').hide();
-	$('.period-dropdown').hide();
-}
+hospitals = [
+	{
+		key: 'PCMC',
+		name: 'Presence Covenant Medical Center',
+		system: 'Presence',
+		heading: 'Transferred to OSF',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PHFMC',
+		name: 'Presence Holy Family Medical Center',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PMMC',
+		name: 'Presence Mercy Medical Center',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PRMC',
+		name: 'Presence Resurrection Medical Center',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PSFH',
+		name: 'Presence Saint Francis Hospital',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PSJHC',
+		name: 'Presence Saint Joseph Hospital - Chicago',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PSJHE',
+		name: 'Presence Saint Joseph Hospital - Elgin',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PSJMC',
+		name: 'Presence Saint Joseph Medical Center',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PSMEMC',
+		name: 'Presence Saints Mary and Elizabeth Medical Center',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PSMH',
+		name: 'Presence St. Mary\'s Hospital',
+		system: 'Presence',
+		heading: 'Presence Health',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PUSMC',
+		name: 'Presence United Samaritans Medical Center',
+		system: 'Presence',
+		heading: 'Transferred to OSF',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PMG',
+		name: 'Presence Medical Group',
+		system: 'Presence',
+		heading: 'System Services',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PLC',
+		name: 'Presence Life Connections',
+		system: 'Presence',
+		heading: 'System Services',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PH Corp',
+		name: 'Presence Health Corporate',
+		system: 'Presence',
+		heading: 'System Services',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'PH System',
+		name: 'Presence Health',
+		system: 'Presence',
+		heading: '',
+		fiscal: 'Calendar year',
+		isSystem: true,
+	},
+	{
+		key: 'AH System',
+		name: 'AMITA Health (Legacy)',
+		system: 'AMITA',
+		heading: '',
+		fiscal: 'July 1 - June 30',
+		isSystem: true,
+	},
+	{
+		key: 'System',
+		name: 'AMITA Health',
+		system: '',
+		heading: '',
+		fiscal: 'July 1 - June 30',
+		isSystem: true,
+	},
+	{
+		key: 'ABBHH',
+		name: 'Alexian Brothers Behavioral Health Hospital',
+		system: 'AMITA',
+		heading: 'Alexian Brothers Health System',
+		fiscal: 'July 1 - June 30',
+	},
+	{
+		key: 'ABMC',
+		name: 'Alexian Brothers Medical Center',
+		system: 'AMITA',
+		heading: 'Alexian Brothers Health System',
+		fiscal: 'July 1 - June 30',
+	},
+	{
+		key: 'SAMC',
+		name: 'St. Alexius Medical Center',
+		system: 'AMITA',
+		heading: 'Alexian Brothers Health System',
+		fiscal: 'July 1 - June 30',
+	},
+	{
+		key: 'Bolingbrook',
+		name: 'Adventist Medical Center - Bolingbrook',
+		system: 'AMITA',
+		heading: 'Adventist Health System',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'GlenOaks',
+		name: 'Adventist Medical Center - GlenOaks',
+		system: 'AMITA',
+		heading: 'Adventist Health System',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'Hinsdale',
+		name: 'Adventist Medical Center - Hinsdale',
+		system: 'AMITA',
+		heading: 'Adventist Health System',
+		fiscal: 'Calendar year',
+	},
+	{
+		key: 'La Grange',
+		name: 'Adventist Medical Center - La Grange',
+		system: 'AMITA',
+		heading: 'Adventist Health System',
+		fiscal: 'Calendar year',
+	},
+];
 
 // Here, give the category groupings you want to use.
 // You can keep these default ones, or add your own. 
@@ -94,7 +212,7 @@ var groupings = {
 	'Community Health': ['Community Building Activities',
 		'Community Health Improvement', 'Community Benefit Operations'
 	],
-	'Proactive Community Benefit': ['Subsidized Health Services', 'Community Health Improvement', 'Community Building Activities',
+	'Proactive Community Benefit (IRS)': ['Subsidized Health Services', 'Community Health Improvement', 'Community Building Activities',
 		'Community Benefit Operations', 'Cash/In-Kind Contributions', 'Research',
 		'Language Assistance Services', 'Volunteer Services'
 	],
@@ -126,7 +244,7 @@ var categories_abbr = {
 	'Total Community Benefit (IRS)': 'total community benefit (IRS definition)',
 	'Total Community Benefit (AG)': 'total community benefit (Illinois Attorney General definition)',
 	'Total Means-Tested': 'means-tested community benefit',
-	'Proactive Community Benefit': 'proactive community benefit',
+	'Proactive Community Benefit (IRS)': 'proactive community benefit',
 	'Proactive Community Benefit (AG)': 'proactive community benefit (AG)',
 	'Community Health': 'community health programs',
 	'Community Transformation': 'community transformation',
@@ -154,7 +272,7 @@ var categories_definitions = {
 	'Total Community Benefit (IRS)': 'Under the Affordable Care Act, the Internal Revenue Service requires all non-profit hospitals to provide annual reports of programs undertaken to improve the health of their communities.',
 	'Total Community Benefit (AG)': 'The Illinois Attorney General requires all non-profit hospitals to report community benefit annually. Their classification differs somewhat from the IRS&rsquo;s classification and includes Medicare shortfall and bad debts.',
 	'Total Means-Tested': 'Includes financial assistance and Medicaid shortfall, which are provided only to patients below certain income levels.',
-	'Proactive Community Benefit': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
+	'Proactive Community Benefit (IRS)': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
 	'Proactive Community Benefit (AG)': 'As part of our mission to enhance the health of our communities, we have a special focus on proactively addressing the root causes of health outcomes. Through community health programs, research, volunteer activities, and other community benefit, we are removing barriers to healthy communities, reducing overall health care costs, and helping residents remain healthy and fulfilled.',
 	'Community Health': 'Community health programs are provided to patients in poverty and to the broader community, and focus on proactively improving community health through services like educational sessions, health screenings, enrollment assistance, and care coordination programs.',
 	'Community Transformation': 'Services provided to the broader community that proactively address the root causes of health outcomes and invest in building and supporting healthy communities.',
@@ -185,13 +303,14 @@ var units_definitions = {
 };
 
 
-// Change this to use your own color scheme if you want. Colors will be used in order from first to last, and then loop around again.
-var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
-	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A'
+// Change this to use your own color scheme if you want. 
+// Colors will be used in order from first to last, and then loop around again.
+// var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
+// 	'#089DAB', '#06A18C', '#4AB553', '#DF7E2A'
+// ];
+var colors = ['#7BA3DC', '#1BCFC9', '#94D500', '#007B8B', '#ED7800',
+	'#636466', '#005195', '#4AB553', '#DF7E2A'
 ];
-
-
-
 
 
 
@@ -199,15 +318,68 @@ var colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
  ****** END METADATA
  *******************************/
 
-
 /************************************************
 // YOU SHOULD NOT NEED TO EDIT PAST THIS LINE
 ************************************************/
+
+
+// User-specified
+// Often data before a certain time period is of poor quality. Here, you can indicate 
+// whether or not to show data before a certain time period, which may be of poor quality.
+// The user can request this in the URL by adding ?earlier=true
+// Checking a checkbox in the left sidebar reloads the page with earlier=true
+if ("earlier" in QueryString && QueryString.earlier == "true") {
+	options.earlier = true;
+}
+
+// Mode to hide everything except the area and line charts
+if ("simple" in QueryString){
+	options.simple = true;
+	$('#container-3, #container-1').closest('div').hide();
+	$('.period-dropdown').hide();
+}
+
+// See only one legacy system at a time
+var possibleSystems = hospitals.map(function(m){
+	return m.system;
+}).filter(function(item, pos, self){
+  return self.indexOf(item) === pos && item !== '';
+});
+
+if ("system" in QueryString){
+	options.viewSystem = QueryString.system;
+	hospitals = hospitals.filter(function(h){
+		return h.system === options.viewSystem;
+	});
+	if (!hospitals.length){
+		HighchartHolder.functions.showAlert('The system name you entered, "' + options.viewSystem + 
+			'", is invalid.<br><br>Please leave it blank or enter one of the following: <br><br>' + 
+			possibleSystems.join('<br>'));
+	}
+	systemVar = hospitals.filter(function(m){ return m.isSystem })[0].key;
+} else {
+	hospitals = hospitals.filter(function(h){
+		return !h.isSystem || h.key === 'System';
+	});	
+	systemVar = 'System';
+}
+
+m = systemVar;
+
+allHospitals = hospitals.map(function(h){ return h.key; });
+
+// User can show a certain hospital on page load by adding "?hospital=XXXX" to the URL, e.g. "?hospital=PCMC"
+if ("hospital" in QueryString && allHospitals.indexOf(QueryString.hospital) !== -1) {
+	m = QueryString.hospital;
+}
+
+
 
 /*global $*/
 /*global Highcharts*/
 /*global Papa*/
 /*global HighchartHolder*/
+
 
 var cb = {
 	scope: {
@@ -220,17 +392,14 @@ var cb = {
 	functions: {
 		initialize: function() {
 			cb.events.document_ready();
-			HighchartHolder.events.document_ready();
 			HighchartHolder.functions.initialize();
-
-			$('#period').append('<option value="' + p + '">' + p + '</option>');
 
 			/** 
 			 *	For every hospital in hospitals array, load individual data
 			 **/
-			for (var ho in hospitals) {
+			allHospitals.forEach(function(ho){
 				cb.functions.loadHospital(ho);
-			}
+			});
 		},
 		csvToArray: function(csvString) {
 			// The array we're going to build
@@ -280,6 +449,19 @@ var cb = {
 					cb.functions.loadData(hospital, results.data);
 					$('#progress-bar .progress-bar').css('width', String(cb.scope.completed / allHospitals.length * 100) + '%')
 						.attr('aria-valuenow', cb.scope.completed);
+
+					if (cb.scope.completed == allHospitals.length) {
+						cb.functions.loadFinished();
+					}
+				},
+				error: function(msg){
+					var index = allHospitals.indexOf(hospital);
+					if (index > -1) {
+					  allHospitals.splice(index, 1);
+					  $('#hospitalSelect option[value="' + hospital + '"]').attr('disabled', 'disabled');
+					}
+					HighchartHolder.functions.showAlert('Error loading data for ' + hospital + ': ' + msg + '.');
+					$('#progress-bar .progress-bar').css('width', String(cb.scope.completed / allHospitals.length * 100) + '%');
 
 					if (cb.scope.completed == allHospitals.length) {
 						cb.functions.loadFinished();
@@ -467,199 +649,159 @@ var cb = {
 	},
 	events: {
 		document_ready: function() {
-			/***
-			 *	TODO: Seperate into individual event calls/handle better way
-			 **/
 			$(document).ready(function() {
-				if (options.earlier) {
-					$('#earlier-data').prop('checked', true);
-				}
-
-				$('.system-name').text(options.systemName);
-				$('.last-updated').text(options.lastUpdated);
-
-				$('#hospitalSelect').val(m);
-
-				$('#earlier-data').on('change', function(e) {
-					var checked = $(this).prop('checked');
-					var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
-					// TD Is there a safer way to modify the URL like this?
-					if (checked) {
-						window.location = url + '?earlier=true';
-					}
-					else {
-						window.location = url;
-					}
-				});
+				cb.events.update_elements();
+				cb.events.bind_events();
 
 				// Show warning about data quality
 				$('#dataWarningModal').modal('show');
-
-				// When user changes the category shown, everything changes
-				function changeCategory(cat) {
-					c = cat;
-					// change units
-					// for non-CB categories
-					if (groupings['NonCB'].indexOf(c) !== -1) {
-						// reset and disable all buttons
-						$('#unit .amount-dropdown').hide().find('.dropdown-name').text('Amount');
-						$('#unit .amount-unit').show();
-						$('#unit .amount-dropdown button').attr('disabled', 'disabled').removeClass('active');
-						$('#unit .btn-default').removeClass('active').addClass('disabled');
-						u = 'Amount';
-						$('.units-definition').text('');
-						HighchartHolder.functions.loadCharts('c');
-					}
-					else {
-						// enable all buttons
-						$('#unit .amount-dropdown button').removeAttr('disabled', 'disabled');
-						$('#unit .btn-default').removeClass('disabled');
-						if (c == 'Unreimbursed Medicaid') {
-							// switch to amount dropdown
-							$('#unit .amount-unit').hide();
-							$('#unit .amount-dropdown').show().find('li').show();
-							// if unit was in the dropdown, keep it highlighted
-							if (u == 'Amount' || u == 'Net patient care' || u == 'Billings') {
-								$('#unit .dropdown-name').text(u);
-								$('#unit .amount-dropdown button').addClass('active');
-							}
-						}
-						else if (c == 'Financial Assistance' || c == 'Bad Debt') {
-							// switch to amount dropdown
-							$('#unit .amount-unit').hide();
-							$('#unit .amount-dropdown').show().find('li').each(function(index) {
-								if ($(this).find('a').data('name') == 'Net patient care') {
-									$(this).hide();
-								}
-								else {
-									$(this).show();
-								}
-							});
-							// if unit was in the dropdown, keep it highlighted
-							if (u == 'Amount' || u == 'Billings') {
-								$('#unit .dropdown-name').text(u);
-								$('#unit .amount-dropdown button').addClass('active');
-							}
-							else if (u == 'Net patient care') {
-								u = 'Amount';
-								$('#unit .dropdown-name').text(u);
-								$('#unit .amount-dropdown button').addClass('active');
-								$('.units-definition').text(units_definitions[u]);
-							}
-						}
-						else {
-							// hide dropdown
-							$('#unit .amount-unit').show();
-							$('#unit .amount-dropdown').hide().find('.dropdown-name').text('Amount');
-							// if unit was in the dropdown, highlight Amount
-							if (u == 'Amount' || u == 'Net patient care' || u == 'Billings') {
-								$('#unit .amount-unit').addClass('active');
-								u = 'Amount';
-								$('.units-definition').text(units_definitions[u]);
-							}
-							// hide person served if necessary
-							if (['Medicare Shortfall', 'Bad Debt', 'Language Assistance Services',
-									'Volunteer Services', 'total Community Benefit (AG)'
-								].indexOf(c) !== -1) {
-								$('#unit .persons-unit').addClass('disabled');
-								if (u == 'Persons served') {
-									u = 'Amount';
-									$('.units-definition').text(units_definitions[u]);
-									$('#unit .amount-unit').addClass('active');
-								}
-							}
-							else {
-								$('#unit .persons-unit').removeClass('disabled');
-							}
-						}
-						// if user requested a grouping, give it to them
-						if (c in groupings) {
-							ac = c;
-							HighchartHolder.functions.loadCharts('ac');
-						}
-						else {
-							HighchartHolder.functions.loadCharts('c');
-						}
-					}
-				}
-
-				/******************* category change */
-				// list group items
-				$('#category-select .list-group').on('click', 'a', function(e) {
-					e.preventDefault();
-					changeCategory($(this).data('name'));
-					$('#category-select .list-group a').removeClass('active');
-					$(this).addClass('active');
-				});
-				// drop-down select
-				$('#category-select select').on('change', function(e) {
-					if (this.value !== 'Other Categories...') {
-						$('#category-select .list-group a').removeClass('active');
-						changeCategory(this.value);
-					}
-					else {
-						// reset
-						$('#category-select .list-group a').eq(0).trigger('click');
-					}
-				});
-
-				/******************* unit change */
-				// drop-down select
-				$('#unit .amount-dropdown a').on('click', function(e) {
-					e.preventDefault();
-					$('#unit a.btn').removeClass('active');
-					u = $(this).data('name');
-					$('.units-definition').text(units_definitions[u]);
-					$('#unit .dropdown-name').text($(this).data('name'));
-					$('#unit .amount-dropdown button').addClass('active');
-					HighchartHolder.functions.loadCharts('u');
-				});
-				// button group items
-				$('#unit a.btn').on('click', function(e) {
-					e.preventDefault();
-					$('#unit .amount-dropdown button').removeClass('active');
-					$('#unit a.btn').removeClass('active');
-					$(this).addClass('active');
-					u = $(this).data('name');
-					$('.units-definition').text(units_definitions[u]);
-					HighchartHolder.functions.loadCharts('u');
-				});
-
-				/******************* hospital change */
-				$('#hospital #hospitalSelect').on('change', function(e) {
-					m = this.value;
-					HighchartHolder.functions.loadCharts('m');
-				});
-
-				/******************* temporal change */
-				$('#temporal').on('click', 'a', function(e) {
-					$('#period option').remove();
-					if ($(this).data('name') == "Yearly") {
-						cb.scope.years.forEach(function(year) {
-							$('#period').append('<option value="' + year + '">' + year + '</option>');
-						});
-						p = cb.scope.years[0];
-					}
-					else {
-						cb.scope.quarters.forEach(function(quarter) {
-							$('#period').append('<option value="' + quarter + '">' + quarter + '</option>');
-						});
-						p = cb.scope.quarters[0];
-					}
-					$('#temporal a').toggleClass('active');
-					t = $(this).data('name');
-					$('.period-dropdown label').text(t.substring(0, $(this).data('name').length - 2));
-					HighchartHolder.functions.loadCharts('t');
-				});
-
-				/******************* period change */
-				$('#period').on('change', function(e) {
-					p = this.value;
-					HighchartHolder.functions.loadCharts('p');
-				});
 			});
-		}
+		},
+		bind_events: function(){
+			// Two overriding options that reload the page
+			$('#systemSelect').on('change', function(){
+				HighchartHolder.functions.reloadPage();
+			});
 
+			$('#earlier-data').on('change', function(e) {
+				HighchartHolder.functions.reloadPage();
+			});
+
+			/******************* category change */
+			// list group items
+			$('#category-select .list-group').on('click', 'a', function(e) {
+				e.preventDefault();
+				HighchartHolder.functions.changeCategory($(this).data('name'));
+				$('#category-select .list-group a').removeClass('active');
+				$(this).addClass('active');
+			});
+			// drop-down select
+			$('#category-select select').on('change', function(e) {
+				if (this.value !== 'Other Categories...') {
+					$('#category-select .list-group a').removeClass('active');
+					HighchartHolder.functions.changeCategory(this.value);
+				}
+				else {
+					// reset
+					$('#category-select .list-group a').eq(0).trigger('click');
+				}
+			});
+
+			/******************* unit change */
+			// drop-down select
+			$('#unit .amount-dropdown a').on('click', function(e) {
+				e.preventDefault();
+				$('#unit a.btn').removeClass('active');
+				u = $(this).data('name');
+				$('.units-definition').text(units_definitions[u]);
+				$('#unit .dropdown-name').text($(this).data('name'));
+				$('#unit .amount-dropdown button').addClass('active');
+				HighchartHolder.functions.loadCharts('u');
+			});
+			// button group items
+			$('#unit a.btn').on('click', function(e) {
+				e.preventDefault();
+				$('#unit .amount-dropdown button').removeClass('active');
+				$('#unit a.btn').removeClass('active');
+				$(this).addClass('active');
+				u = $(this).data('name');
+				$('.units-definition').text(units_definitions[u]);
+				HighchartHolder.functions.loadCharts('u');
+			});
+
+			/******************* hospital change */
+			$('#hospital #hospitalSelect').on('change', function(e) {
+				m = this.value;
+				HighchartHolder.functions.loadCharts('m');
+			});
+
+			/******************* temporal change */
+			$('#temporal').on('click', 'a', function(e) {
+				$('#period option').remove();
+				if ($(this).data('name') == "Yearly") {
+					cb.scope.years.forEach(function(year) {
+						$('#period').append('<option value="' + year + '">' + year + '</option>');
+					});
+					p = cb.scope.years[0];
+				}
+				else {
+					cb.scope.quarters.forEach(function(quarter) {
+						$('#period').append('<option value="' + quarter + '">' + quarter + '</option>');
+					});
+					p = cb.scope.quarters[0];
+				}
+				$('#temporal a').toggleClass('active');
+				t = $(this).data('name');
+				$('.period-dropdown label').text(t.substring(0, $(this).data('name').length - 2));
+				HighchartHolder.functions.loadCharts('t');
+			});
+
+			/******************* period change */
+			$('#period').on('change', function(e) {
+				p = this.value;
+				HighchartHolder.functions.loadCharts('p');
+			});
+
+			// Hide all series in the area chart
+			$('html').on('click', '.hide-all', function(){
+				if ($(this).hasClass('all-hidden')){
+					$(this).removeClass('all-hidden').text('Hide all');
+					$(HighchartHolder.scope.areaChart.series).each(function(){
+						this.setVisible(true, false);
+					});
+					HighchartHolder.scope.areaChart.redraw();
+				} else {
+					$(this).addClass('all-hidden').text('Show all');
+					$(HighchartHolder.scope.areaChart.series).each(function(){
+						this.setVisible(false, false);
+					});
+				}
+			});
+		},
+		update_elements: function(){
+			if (options.earlier) {
+				$('#earlier-data').prop('checked', true);
+			}
+
+			// Fill out the system Select
+			if (possibleSystems.length > 1){
+				possibleSystems.forEach(function(s){
+					$('#systemSelect').append('<option value="' + s + '">Showing only ' + s + '</option>');
+				});
+			} else {
+				$('#systemSelect').remove();
+			}
+
+			$('#systemSelect').val(options.viewSystem);
+
+			$('.system-name').text(options.systemName);
+			$('.last-updated').text(options.lastUpdated);
+
+			$('#period').append('<option value="' + p + '">' + p + '</option>');
+
+			// Fill out the hospital select
+			var optionGroupings = hospitals.map(function(h){
+				return h.heading;
+			}).filter(function(item, pos, self){  // remove duplicates
+			  return self.indexOf(item) === pos;
+			}).sort(function(b, a){
+				return b > a;
+			});
+			optionGroupings.forEach(function(g){
+				var $group = $('<optgroup label="' + g + '">');
+				hospitals.filter(function(h){
+					return h.heading === g;
+				}).sort(function(b, a){
+					return b.key > a.key;
+				}).forEach(function(h){
+					$group.append('<option value="' + h.key + '">' + h.name + '</option>');
+				});
+				$('#hospitalSelect').append($group);
+			})
+
+			$('#hospitalSelect').val(m);
+
+		}
 	}
 }
 
@@ -676,27 +818,6 @@ HighchartHolder = {
 		areaChart: {},
 		treeChart: {},
 		lineChart: {}
-	},
-	events: {
-		document_ready: function(){
-			$(document).ready(function(){
-				// Hide all series in area chart
-				$('.hide-all').on('click', function(){
-					if ($(this).hasClass('all-hidden')){
-						$(this).removeClass('all-hidden').text('Hide all');
-						$(HighchartHolder.scope.areaChart.series).each(function(){
-							this.setVisible(true, false);
-						});
-						HighchartHolder.scope.areaChart.redraw();
-					} else {
-						$(this).addClass('all-hidden').text('Show all');
-						$(HighchartHolder.scope.areaChart.series).each(function(){
-							this.setVisible(false, false);
-						});
-					}
-				});
-			});
-		}
 	},
 	functions: {
 		charts: {
@@ -895,7 +1016,7 @@ HighchartHolder = {
 							},
 							zIndex: 2,
 							index: 1,
-							color: colors[5],
+							color: colors[0],
 							pointPadding: 0.05,
 							groupPadding: 0.1
 						});
@@ -961,6 +1082,9 @@ HighchartHolder = {
 							formatter: function(){
 								return this.point.name;
 							},
+							style: {
+								fontSize: "14px",
+							},
 						}
 					}],
 					tooltip: {
@@ -1011,10 +1135,10 @@ HighchartHolder = {
 							name: category,
 							data: Array.prototype.slice.call(cb.scope.d[m][category][unit][t]).reverse(),
 							index: index,
-							visible: !(ac === 'Total Community Benefit (IRS)' && m !== 'System' && cb.scope.d[m][category][unit][t][0] < 0)
+							visible: !(ac === 'Total Community Benefit (IRS)' && m !== systemVar && cb.scope.d[m][category][unit][t][0] < 0)
 						});
 					}
-					if (m !== 'System') {
+					if (m !== systemVar) {
 						var numMissing = 0;
 						cb.scope.d[m][category][unit][t].forEach(function(datum) {
 							if (datum === null) {
@@ -1027,7 +1151,7 @@ HighchartHolder = {
 					}
 					else {
 						// need to check each hospital
-						for (var mi in hospitals) {
+						allHospitals.forEach(function(mi){
 							var numMissing = 0;
 							cb.scope.d[mi][category][unit][t].forEach(function(datum) {
 								if (datum === null) {
@@ -1037,7 +1161,7 @@ HighchartHolder = {
 							if (numMissing > 0) {
 								missingData.push(HighchartHolder.functions.addMissing(mi, category, numMissing));
 							}
-						}
+						});
 					}
 					index -= 1;
 				});
@@ -1163,7 +1287,7 @@ HighchartHolder = {
 
 				$('.hide-all').show();
 
-				HighchartHolder.functions.noteMissing('#container-2', missingData, (m == 'System'));
+				HighchartHolder.functions.noteMissing('#container-2', missingData, (m == systemVar));
 			},
 			loadColumnChart: function() {
 				// select the data
@@ -1186,32 +1310,32 @@ HighchartHolder = {
 				}
 				var o = {};
 				if (groupings['NonCB'].indexOf(c) !== -1) { // For non-community benefit categories
-					for (let mi in hospitals) {
+					allHospitals.forEach(function(mi){
 						if (cb.scope.d[mi][c]['Yearly'].length &&
 							cb.scope.d[mi][c]['Yearly'].reduce(function(a, b) {
 								return a + b;
 							}) &&
-							(mi !== 'System' || c == 'Cost-to-Charge Ratio')) {
+							(mi !== systemVar || c == 'Cost-to-Charge Ratio')) {
 							orderedHospitals.push({
 								name: mi,
 								value: cb.scope.d[mi][c]['Yearly'][0]
 							});
 						}
-					}
+					});
 				}
 				else {
-					for (let mi in hospitals) {
+					allHospitals.forEach(function(mi){
 						if (cb.scope.d[mi][c][u]['Yearly'].length &&
 							cb.scope.d[mi][c][u]['Yearly'].reduce(function(a, b) {
 								return a + b;
 							}) &&
-							(mi !== 'System' || u == '% of revenue')) {
+							(mi !== systemVar || u == '% of revenue')) {
 							orderedHospitals.push({
 								name: mi,
 								value: cb.scope.d[mi][c][u]['Yearly'][0]
 							});
 						}
-					}
+					});
 				}
 				// Put hospitals in descending order of most recent amount
 				var working = true;
@@ -1234,11 +1358,11 @@ HighchartHolder = {
 							cb.scope.d[mi][c]['Yearly'].reduce(function(a, b) {
 								return a + b;
 							}) &&
-							(mi !== 'System' || c == 'Cost-to-Charge Ratio')) {
+							(mi !== systemVar || c == 'Cost-to-Charge Ratio')) {
 							x.push(mi);
 							// add the data
 							// make System column stand out by coloring it gray
-							if (mi == 'System') {
+							if (mi == systemVar) {
 								for (let i = 0; i <= 3; i++) {
 									var b = cb.scope.d[mi][c]['Yearly'][3 - i];
 									y[i]['data'].push({
@@ -1263,11 +1387,11 @@ HighchartHolder = {
 							cb.scope.d[mi][c][u]['Yearly'].reduce(function(a, b) {
 								return a + b;
 							}) &&
-							(mi !== 'System' || u == '% of revenue')) {
+							(mi !== systemVar || u == '% of revenue')) {
 							x.push(mi);
 							// add the data
 							// make System columns stand out
-							if (mi == 'System') {
+							if (mi == systemVar) {
 								for (i = 0; i <= 3; i++) {
 									var b = cb.scope.d[mi][c][u]['Yearly'][3 - i];
 									y[i]['data'].push({
@@ -1317,7 +1441,7 @@ HighchartHolder = {
 						type: 'column',
 						renderTo: 'container-1'
 					},
-					colors: [colors[1], colors[5], colors[3], colors[4]],
+					colors: [colors[0], colors[1], colors[3], colors[4]],
 					title: {
 						text: c + ' by Hospital',
 					},
@@ -1364,6 +1488,92 @@ HighchartHolder = {
 						enabled: false
 					}
 				});
+			}
+		},
+		changeCategory: function(cat) {
+			c = cat;
+			// change units
+			// for non-CB categories
+			if (groupings['NonCB'].indexOf(c) !== -1) {
+				// reset and disable all buttons
+				$('#unit .amount-dropdown').hide().find('.dropdown-name').text('Amount');
+				$('#unit .amount-unit').show();
+				$('#unit .amount-dropdown button').attr('disabled', 'disabled').removeClass('active');
+				$('#unit .btn-default').removeClass('active').addClass('disabled');
+				u = 'Amount';
+				$('.units-definition').text('');
+				HighchartHolder.functions.loadCharts('c');
+			}
+			else {
+				// enable all buttons
+				$('#unit .amount-dropdown button').removeAttr('disabled', 'disabled');
+				$('#unit .btn-default').removeClass('disabled');
+				if (c == 'Unreimbursed Medicaid') {
+					// switch to amount dropdown
+					$('#unit .amount-unit').hide();
+					$('#unit .amount-dropdown').show().find('li').show();
+					// if unit was in the dropdown, keep it highlighted
+					if (u == 'Amount' || u == 'Net patient care' || u == 'Billings') {
+						$('#unit .dropdown-name').text(u);
+						$('#unit .amount-dropdown button').addClass('active');
+					}
+				}
+				else if (c == 'Financial Assistance' || c == 'Bad Debt') {
+					// switch to amount dropdown
+					$('#unit .amount-unit').hide();
+					$('#unit .amount-dropdown').show().find('li').each(function(index) {
+						if ($(this).find('a').data('name') == 'Net patient care') {
+							$(this).hide();
+						}
+						else {
+							$(this).show();
+						}
+					});
+					// if unit was in the dropdown, keep it highlighted
+					if (u == 'Amount' || u == 'Billings') {
+						$('#unit .dropdown-name').text(u);
+						$('#unit .amount-dropdown button').addClass('active');
+					}
+					else if (u == 'Net patient care') {
+						u = 'Amount';
+						$('#unit .dropdown-name').text(u);
+						$('#unit .amount-dropdown button').addClass('active');
+						$('.units-definition').text(units_definitions[u]);
+					}
+				}
+				else {
+					// hide dropdown
+					$('#unit .amount-unit').show();
+					$('#unit .amount-dropdown').hide().find('.dropdown-name').text('Amount');
+					// if unit was in the dropdown, highlight Amount
+					if (u == 'Amount' || u == 'Net patient care' || u == 'Billings') {
+						$('#unit .amount-unit').addClass('active');
+						u = 'Amount';
+						$('.units-definition').text(units_definitions[u]);
+					}
+					// hide person served if necessary
+					if (['Medicare Shortfall', 'Bad Debt', 'Language Assistance Services',
+							'Volunteer Services', 'total Community Benefit (AG)'
+						].indexOf(c) !== -1) {
+						$('#unit .persons-unit').addClass('disabled');
+						if (u == 'Persons served') {
+							u = 'Amount';
+							$('.units-definition').text(units_definitions[u]);
+							$('#unit .amount-unit').addClass('active');
+						}
+					}
+					else {
+						$('#unit .persons-unit').removeClass('disabled');
+					}
+				}
+				// if user requested a grouping, give it to them
+				if (c in groupings) {
+					ac = c;
+					HighchartHolder.functions.loadCharts('ac');
+				}
+				else {
+					HighchartHolder.functions.loadCharts('c');
+				}
 			}
 		},
 		loadCharts: function(order, lineAreaOnly) {
@@ -1471,6 +1681,7 @@ HighchartHolder = {
 				var timeIndex = cb.scope.quarters.indexOf(p);
 			}
 			var value;
+			var hospitalName = hospitals.filter(function(h){ return h.key === m })[0].name;
 			if (cb.scope.d[m][c]['Amount'] &&
 				cb.scope.d[m][c]['Amount'][t][timeIndex] &&
 				cb.scope.d[m][c]['Amount'][t][timeIndex] !== 0 && groupings['NonCB'].indexOf(c) == -1) {
@@ -1483,7 +1694,7 @@ HighchartHolder = {
 				else {
 					headline += p;
 				}
-				headline += ', <span id="headline-min">' + hospitals[m] + '</span> ';
+				headline += ', <span id="headline-min">' + hospitalName + '</span> ';
 				headline += ' provided <span id="headline-num">$' + value + '</span> in <span id="headline-cat">' +
 					categories_abbr[c] + '</span>';
 				if (cb.scope.d[m][c]['Persons served'] !== undefined &&
@@ -1498,10 +1709,10 @@ HighchartHolder = {
 			}
 			else {
 				// no value for headline
-				headline = hospitals[m] + ', ' + c;
+				headline = hospitalName + ', ' + c;
 			}
 			$('.headline h3').html(headline);
-			if (m !== 'System' && c === 'Total Community Benefit (IRS)') {
+			if (m !== systemVar && c === 'Total Community Benefit (IRS)') {
 				$('.headline>p').html(categories_definitions[c] + '<br><p class="small pull-right">* May include negative components treated as $0 per IRS guidelines.</p>');
 			} else if (c === 'Unreimbursed Medicaid'){
 				$('.headline>p').html(categories_definitions[c] + '<br><p class="small pull-right">* All Medicaid components are shown in terms of community benefit (positive numbers indicate a net loss).</p>');
@@ -1525,23 +1736,10 @@ HighchartHolder = {
 				var missingLines = [];
 				if (system) {
 					// TD This needs to just be built live using `hospitals` instead of hard-coding all of them
-					var mins = {
-						'PCMC': 0,
-						'PHFMC': 0,
-						'PMMC': 0,
-						'POLRMC': 0,
-						'PRMC': 0,
-						'PSFH': 0,
-						'PSJHC': 0,
-						'PSJHE': 0,
-						'PSJMC': 0,
-						'PSMEMC': 0,
-						'PSMH': 0,
-						'PUSMC': 0,
-						'PLC': 0,
-						'PMG': 0,
-						'PH Corp': 0
-					};
+					var mins = {};
+					allHospitals.forEach(function(mi){
+						mins[mi] = 0;
+					});
 					data.forEach(function(datum) {
 						mins[datum.hospital] += datum.number;
 						numMissing += datum.number;
@@ -1567,6 +1765,27 @@ HighchartHolder = {
 			else {
 				$(chart).siblings('.warning').empty();
 			}
+		},
+		reloadPage: function(){
+			var url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+			if ($('#earlier-data').prop('checked')){
+				url += '?earlier=true';
+				if ($('#systemSelect').val() !== 'System'){
+					url += '&system=' + $('#systemSelect').val();
+				}
+			} else if ($('#systemSelect').val() !== 'System'){
+				url += '?system=' + $('#systemSelect').val();
+			}
+			window.location = url;
+		},
+		showAlert: function(msg){
+			var html = '<div class="col-md-8 col-md-offset-2 col-xs-12 alert alert-warning' + 
+	      ' alert-dismissable" role="alert">' + 
+	      '<button type="button" class="close" data-dismiss="alert" ' + 
+	      'aria-label="Close"><span aria-hidden="true">&times;</span>' + 
+	      '</button>' + msg + '</div>';
+	    var $alert = $(html);
+	    $(html).hide().prependTo($('.alert-container')).fadeIn();
 		}
 	}
 }

@@ -1,16 +1,16 @@
 
 /* colors 
 
-Blue #87D2DA
+Blue #7BA3DC
 Blizzard #02B4C5
 Sky #089DAB
 Teal #70C8BC
 Aqua #00B09A
 Great Lakes #06A18C
-Green #B3D034
+Green #94D500  
 Dark Green #7ABC43
 Leafy Green #4AB553
-Orange #EEB91C
+Orange #ED7800
 Tangerine #ECA337
 Sunset #DF7E2A
 
@@ -37,7 +37,7 @@ danger: sunset
 }
 
 #options-bar {
-	background-color: #87D2DA;
+	background-color: #CAD3EC;
 }
 
 #options-bar h2,
@@ -47,6 +47,11 @@ danger: sunset
 
 #options-bar h2 {
 	margin-bottom: -20px;
+}
+
+.alert-container {
+	position: absolute;
+	z-index: 2;
 }
 
 /* resize charts for large screens */
@@ -61,13 +66,17 @@ danger: sunset
 	}
 }
 
+.logo {
+	margin: 15px auto 0 auto;
+}
+
 .logo:hover {
 	opacity: 0.8;
 }
 
 /* headline */
 .headline {
-	background-color: #666;
+	background-color: #636466;
 	min-height: 20px;
 	padding: 0 15% 15px 15%;
 	margin-bottom: 20px;
@@ -77,17 +86,17 @@ danger: sunset
 	color: #fff;
 }
 .headline span#headline-min {
-	color: #87D2DA;
+	color: #1BCFC9;
 }
 .headline span#headline-num {
-	color: #EEB91C;
+	color: #ED7800;
 	font-size: 1.3em;
 }
 .headline span#headline-cat {
-	color: #B3D034;
+	color: #94D500;
 }
 .headline span#headline-per {
-	color: #EEB91C;
+	color: #ED7800;
 	font-size: 1.3em;
 }
 
@@ -116,7 +125,7 @@ danger: sunset
 	text-align: center;
 }
 .warning a {
-	color: #666;
+	color: #636466;
 	background-color: #dadada;
 	padding: 1px 3px;
 	border-radius: 3px;
@@ -132,7 +141,7 @@ danger: sunset
 .test {
 	background-color: #00B09A;
 	min-height: 300px;
-	border: 2px solid #666666;
+	border: 2px solid #636466;
 }
 
 /* highcharts tooltip */
