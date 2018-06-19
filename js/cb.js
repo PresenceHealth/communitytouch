@@ -364,6 +364,12 @@ if ("system" in QueryString){
 	systemVar = 'System';
 }
 
+if (options.viewSystem === 'Presence'){  // TODO remove
+	colors = ['#87D2DA', '#70C8BC', '#B3D034', '#7ABC43', '#EEB91C',
+		'#089DAB', '#06A18C', '#4AB553', '#DF7E2A'
+	];
+}
+
 m = systemVar;
 
 allHospitals = hospitals.map(function(h){ return h.key; });
@@ -654,7 +660,9 @@ var cb = {
 				cb.events.bind_events();
 
 				// Show warning about data quality
-				$('#dataWarningModal').modal('show');
+				if (options.viewSystem !== 'Presence'){  // TODO remove
+					$('#dataWarningModal').modal('show');
+				}
 			});
 		},
 		bind_events: function(){
