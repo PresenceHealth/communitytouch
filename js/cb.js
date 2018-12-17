@@ -14,7 +14,7 @@ var m, 																// Default hospital, region, or system to show on page lo
 																			// so specify here the default category to show if it's a grouping
 	  u = 'Amount', 										// Default units to use
 	  t = 'Yearly', 										// Default temporal selection: Yearly or Quarterly
-	  p = '2017', 											// Default time period (could be the latest, or any other one)
+	  p = '2018', 											// Default time period (could be the latest, or any other one)
 	  systemVar,			 									// The key for the system in use - leave blank for default
 	  hospitals,
 	  allHospitals;
