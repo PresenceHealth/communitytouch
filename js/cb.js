@@ -23,7 +23,7 @@ var m, 																// Default hospital, region, or system to show on page lo
 var options = {
 	systemName: 'AMITA Health',  				// Name of the full company
 	viewSystem: 'System',  							// Codename of the system to view
-	lastUpdated: 'June 18, 2018',
+	lastUpdated: 'December 17, 2018',
 	earlier: false,											// If true, will show data before 2012
 	simple: false,											// If true, will hide all charts except the one line/area chart
 }; 
@@ -1087,9 +1087,10 @@ HighchartHolder = {
 						colors: colors,
 						data: y,
 						dataLabels: {
-							formatter: function(){
-								return this.point.name;
-							},
+							format: '{point.name}<br>${point.value:,,.0f}',
+							// formatter: function(){
+							// 	return this.point.name + '<br>${point.value:,.0f}';
+							// },
 							style: {
 								fontSize: "14px",
 							},
