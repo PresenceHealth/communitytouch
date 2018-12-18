@@ -118,8 +118,8 @@ hospitals = [
 	{
 		key: 'PLC',
 		name: 'Presence Life Connections',
-		system: 'Transferred to Ascension Living',
-		heading: 'System Services',
+		system: 'Presence',
+		heading: 'Transferred to Ascension Living',
 		fiscal: 'Calendar year',
 	},
 	{
