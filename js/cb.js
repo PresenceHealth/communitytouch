@@ -138,7 +138,7 @@ hospitals = [
 		isSystem: true,
 	},
 	{
-		key: 'AH System',
+		key: 'AH',
 		name: 'AMITA Health (Legacy)',
 		system: 'AMITA',
 		heading: '',
