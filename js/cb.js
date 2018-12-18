@@ -23,7 +23,7 @@ var m, 																// Default hospital, region, or system to show on page lo
 var options = {
 	systemName: 'AMITA Health',  				// Name of the full company
 	viewSystem: 'System',  							// Codename of the system to view
-	lastUpdated: 'December 17, 2018',
+	lastUpdated: 'December 19, 2018',
 	earlier: false,											// If true, will show data before 2012
 	simple: false,											// If true, will hide all charts except the one line/area chart
 }; 
@@ -32,77 +32,77 @@ var options = {
 // The abbreviations MUST match the names of your data files, e.g. "PCMC.csv". 
 hospitals = [
 	{
-		key: 'PCMC',
+		key: 'CMC',
 		name: 'Presence Covenant Medical Center',
 		system: 'Presence',
 		heading: 'Transferred to OSF',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PHFMC',
-		name: 'Presence Holy Family Medical Center',
+		key: 'HFMC',
+		name: 'AMITA Health Holy Family Medical Center - Des Plaines',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PMMC',
-		name: 'Presence Mercy Medical Center',
+		key: 'MMC',
+		name: 'AMITA Health Mercy Medical Center - Aurora',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PRMC',
-		name: 'Presence Resurrection Medical Center',
+		key: 'RMC',
+		name: 'AMITA Health Resurrection Medical Center - Chicago',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PSFH',
-		name: 'Presence Saint Francis Hospital',
+		key: 'SFH',
+		name: 'AMITA Health Saint Francis Hospital - Evanston',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PSJHC',
-		name: 'Presence Saint Joseph Hospital - Chicago',
+		key: 'SJHC',
+		name: 'AMITA Health Saint Joseph Hospital - Chicago',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PSJHE',
-		name: 'Presence Saint Joseph Hospital - Elgin',
+		key: 'SJHE',
+		name: 'AMITA Health Saint Joseph Hospital - Elgin',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PSJMC',
-		name: 'Presence Saint Joseph Medical Center',
+		key: 'SJMC',
+		name: 'AMITA Health Saint Joseph Medical Center - Joliet',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PSMEMC',
-		name: 'Presence Saints Mary and Elizabeth Medical Center',
+		key: 'SMEMC',
+		name: 'AMITA Health Saints Mary and Elizabeth Medical Center - Chicago',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PSMH',
-		name: 'Presence St. Mary\'s Hospital',
+		key: 'SMH',
+		name: 'AMITA Health St. Mary\'s Hospital - Kankakee',
 		system: 'Presence',
 		heading: 'Presence Health',
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PUSMC',
+		key: 'USMC',
 		name: 'Presence United Samaritans Medical Center',
 		system: 'Presence',
 		heading: 'Transferred to OSF',
@@ -118,7 +118,7 @@ hospitals = [
 	{
 		key: 'PLC',
 		name: 'Presence Life Connections',
-		system: 'Presence',
+		system: 'Transferred to Ascension Living',
 		heading: 'System Services',
 		fiscal: 'Calendar year',
 	},
@@ -130,8 +130,8 @@ hospitals = [
 		fiscal: 'Calendar year',
 	},
 	{
-		key: 'PH System',
-		name: 'Presence Health',
+		key: 'PH',
+		name: 'Presence Health (Legacy)',
 		system: 'Presence',
 		heading: '',
 		fiscal: 'Calendar year',
