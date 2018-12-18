@@ -53,6 +53,13 @@
 
 			<form>
 				<div class="form-group" id="hospital">
+					<label for="systemSelect">System</label>
+					<select class="form-control" id="systemSelect">
+						<option value="System" selected>Showing the combined system</option>
+					</select>
+				</div>
+
+				<div class="form-group" id="hospital">
 					<label for="hospitalSelect">Ministry</label>
 					<select class="form-control" id="hospitalSelect"></select>
 				</div><!-- hospital -->
@@ -130,10 +137,6 @@
 							    Show earlier data (less reliable)
 							  </label>
 							</div>
-
-							<select class="form-control" id="systemSelect">
-								<option value="System" selected>Showing the combined system</option>
-							</select>
 
 							<p style="color: #666; font-style: italic; font-size: 12px;">Last updated on <span class="last-updated"></span></p>
 							<p style="color: #666; font-style: italic; font-size: 12px;"><b>Presence Health&rsquo;s 2018 fiscal year was only six months.</b> For Presence Health, Q1/Q2 2018 is identical to Q3/Q4 2017 and thus shown twice in quarterly charts.</p>
